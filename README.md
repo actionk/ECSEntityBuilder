@@ -234,3 +234,30 @@ public class SetPosition2D : IEntityBuilderStep
     }
 }
 ```
+
+Usage:
+
+```
+ObjectBuilder.Create(6)
+    .SetPosition2D(new int2 {x = -7, y = 0})
+    .Build();
+```
+
+```
+public class ObjectBuilder : EntityBuilder<ObjectBuilder>
+{
+    public static ObjectBuilder Create(int itemId)
+    {
+        return new ObjectBuilder(itemId);
+    }
+
+    protected override ObjectBuilder Self => this;
+
+    private ObjectBuilder(int itemId)
+    {
+        CreateFromArchetype<ArchetypeObject>();
+        SetVariable(new ZIndexVariable(SpriteLayers.OBJECT));
+        SetComponentData(new ObjectData {itemId = itemId});
+    }
+}
+```

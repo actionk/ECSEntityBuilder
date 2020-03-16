@@ -1,10 +1,8 @@
 using System;
-using Core.Entities.Variables;
-using Plugins.ECSEntityBuilder;
 using Plugins.ECSEntityBuilder.Variables;
 using Unity.Entities;
 
-namespace Core.Entities.EntityBuilderSteps
+namespace Plugins.ECSEntityBuilder.Steps
 {
     public class AddBuffer<T> : IEntityBuilderStep where T : struct, IBufferElementData
     {

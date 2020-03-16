@@ -1,10 +1,8 @@
-using Core.Entities.Variables;
-using Plugins.ECSEntityBuilder;
 using Plugins.ECSEntityBuilder.Variables;
 using Unity.Mathematics;
 using Unity.Transforms;
 
-namespace Core.Entities.EntityBuilderSteps
+namespace Plugins.ECSEntityBuilder.Steps
 {
     public class SetPosition : IEntityBuilderStep
     {

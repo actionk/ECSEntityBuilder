@@ -1,4 +1,3 @@
-using Core.Entities.EntityBuilderSteps;
 using Plugins.ECSEntityBuilder.Archetypes;
 using Plugins.ECSEntityBuilder.Variables;
 using Unity.Entities;

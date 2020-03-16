@@ -1,6 +1,4 @@
 using System;
-using Core.Entities;
-using Core.Entities.Variables;
 using Plugins.ECSEntityBuilder.Variables;
 using Unity.Entities;
 
@@ -54,27 +52,42 @@ namespace Plugins.ECSEntityBuilder
             EntityManagerWrapper.SetName(Entity, name);
         }
 
-        public void AddComponentData<T>(Entity entity, T component) where T : struct, IComponentData
+        public void AddComponentData<T>(T component) where T : struct, IComponentData
         {
             EntityManagerWrapper.AddComponentData(Entity, component);
         }
 
-        public void SetComponentData<T>(Entity entity, T component) where T : struct, IComponentData
+        public void SetComponentData<T>(T component) where T : struct, IComponentData
         {
             EntityManagerWrapper.SetComponentData(Entity, component);
         }
 
-        public void AddSharedComponentData<T>(Entity entity, T component) where T : struct, ISharedComponentData
+        public void AddSharedComponentData<T>(T component) where T : struct, ISharedComponentData
         {
             EntityManagerWrapper.AddSharedComponentData(Entity, component);
         }
 
-        public DynamicBuffer<T> AddBuffer<T>(Entity entity) where T : struct, IBufferElementData
+        public DynamicBuffer<T> AddBuffer<T>() where T : struct, IBufferElementData
         {
             return EntityManagerWrapper.AddBuffer<T>(Entity);
         }
 
-        public DynamicBuffer<T> GetBuffer<T>(Entity entity) where T : struct, IBufferElementData
+        public DynamicBuffer<T> AddBuffer<T>(params T[] elements) where T : struct, IBufferElementData
+        {
+            var buffer = EntityManagerWrapper.AddBuffer<T>(Entity);
+            foreach (var element in elements)
+                buffer.Add(element);
+            return buffer;
+        }
+
+        public DynamicBuffer<T> AddElementToBuffer<T>(T element) where T : struct, IBufferElementData
+        {
+            var buffer = EntityManagerWrapper.AddBuffer<T>(Entity);
+            buffer.Add(element);
+            return buffer;
+        }
+
+        public DynamicBuffer<T> GetBuffer<T>() where T : struct, IBufferElementData
         {
             return EntityManagerWrapper.GetBuffer<T>(Entity);
         }

@@ -1,8 +1,6 @@
-using Core.Entities.Variables;
-using Plugins.ECSEntityBuilder;
 using Plugins.ECSEntityBuilder.Variables;
 
-namespace Core.Entities.EntityBuilderSteps
+namespace Plugins.ECSEntityBuilder.Steps
 {
     public class CreateEntity : IEntityBuilderStep
     {

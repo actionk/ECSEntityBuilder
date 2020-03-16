@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Core.Entities.EntityBuilderSteps;
-using Core.Entities.Variables;
 using Plugins.ECSEntityBuilder.Archetypes;
 using Plugins.ECSEntityBuilder.Steps;
 using Plugins.ECSEntityBuilder.Variables;

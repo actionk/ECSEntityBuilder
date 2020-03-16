@@ -2,12 +2,13 @@ using System;
 using System.Collections.Generic;
 using Plugins.ECSEntityBuilder.Archetypes;
 using Unity.Entities;
+using UnityEngine;
 
 namespace Plugins.ECSEntityBuilder
 {
     public class EntityArchetypeManager
     {
-        private static readonly EntityArchetypeManager INSTANCE = new EntityArchetypeManager();
+        private static EntityArchetypeManager INSTANCE = new EntityArchetypeManager();
 
         static EntityArchetypeManager()
         {
@@ -20,6 +21,12 @@ namespace Plugins.ECSEntityBuilder
         public static EntityArchetypeManager Instance
         {
             get { return INSTANCE; }
+        }
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        public static void Reset()
+        {
+            INSTANCE = new EntityArchetypeManager();
         }
 
         private Dictionary<Type, EntityArchetype> m_archetypes = new Dictionary<Type, EntityArchetype>();

@@ -169,7 +169,7 @@ public static class EntityWrapper2DExtensions
 Or to EntityBuilder:
 
 ```
-public static class EntityWrapper2DExtensions
+public static class EntityBuilder2DExtensions
 {
     public static T SetPosition2D<T>(this EntityBuilder<T> wrapper, int2 position)
     {

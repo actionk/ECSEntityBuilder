@@ -2,6 +2,13 @@
 
 This project is a wrapper around Unity ECS entities that allows one to simplify the process of creating / modifying entities.
 
+## Install
+
+You can either just put the files into `Plugins/ECSEntityBuilder` or use it as a submodule:
+```
+git submodule add https://github.com/actionk/UnityECSEntityBuilder.git Assets/Plugins/ECSEntityBuilder
+```
+
 ## EntityWrapper
 
 Entity Wrapper allows you to wrap `Entity` with an object a modify it without the need of passing the Entity reference to the EntityManager over and over again.

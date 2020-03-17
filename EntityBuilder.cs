@@ -78,6 +78,10 @@ namespace Plugins.ECSEntityBuilder
             return AddStep(new AddBuffer<T>(callback));
         }
 
+        public virtual void OnBuild(EntityManagerWrapper wrapper, Entity dataEntity)
+        {
+        }
+
         public Entity Build()
         {
             return Build(EntityManagerWrapper.Default);
@@ -96,6 +100,8 @@ namespace Plugins.ECSEntityBuilder
         public Entity Build(EntityManagerWrapper wrapper)
         {
             m_built = true;
+
+            OnBuild(wrapper, data.entity);
 
             foreach (var step in m_steps)
                 step.Process(wrapper, m_variables, ref data);

@@ -200,6 +200,17 @@ public class SetPosition2D : IEntityBuilderStep
 }
 ```
 
+### Additional functionality on Build()
+
+To add your own Build implementation and access the EntityManager that was used for building, you can overload a `OnBuild` method:
+
+```
+public override void OnBuild(EntityManagerWrapper wrapper, Entity dataEntity)
+{
+    // your building code
+}
+```
+
 ### Variables
 
 When extending the `EntityWrapper` you might want to save some data in the wrapper to reuse it in your extensions. For example, when setting the 2D position, you might want to save ZIndex to be used for this exact entity.

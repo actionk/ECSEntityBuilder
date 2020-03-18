@@ -87,6 +87,11 @@ namespace Plugins.ECSEntityBuilder
             return Build(EntityManagerWrapper.Default);
         }
 
+        public Entity Build(EntityManager entityManager)
+        {
+            return Build(new EntityManagerWrapper(entityManager));
+        }
+
         public Entity Build(EntityCommandBuffer entityCommandBuffer)
         {
             return Build(EntityManagerWrapper.FromCommandBuffer(entityCommandBuffer));

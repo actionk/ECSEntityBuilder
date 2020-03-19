@@ -202,5 +202,20 @@ namespace Plugins.ECSEntityBuilder
                     return;
             }
         }
+
+        public Entity Instantiate(Entity prefabEntity)
+        {
+            switch (Type)
+            {
+                case EntityManagerType.ENTITY_MANAGER:
+                    return EntityManager.Instantiate(prefabEntity);
+                case EntityManagerType.ENTITY_COMMAND_BUFFER:
+                    return EntityCommandBuffer.Instantiate(prefabEntity);
+                case EntityManagerType.ENTITY_COMMAND_BUFFER_CONCURRENT:
+                    return EntityCommandBufferConcurrent.Instantiate(EntityCommandBufferJobIndex, prefabEntity);
+            }
+
+            throw new NotImplementedException();
+        }
     }
 }

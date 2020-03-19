@@ -48,6 +48,11 @@ namespace Plugins.ECSEntityBuilder
             return AddStep(new CreateEntityFromArchetype<T>());
         }
 
+        protected TChild CreateFromPrefab(Entity prefabEntity)
+        {
+            return AddStep(new Instantiate(prefabEntity));
+        }
+
         public TChild AddComponentData<T>(T component) where T : struct, IComponentData
         {
             return AddStep(new AddComponentData<T>(component));

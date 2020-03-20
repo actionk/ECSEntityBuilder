@@ -107,7 +107,7 @@ namespace Plugins.ECSEntityBuilder
             return Build(EntityManagerWrapper.FromJobCommandBuffer(entityCommandBuffer, threadId));
         }
 
-        public Entity Build(EntityManagerWrapper wrapper)
+        public virtual Entity Build(EntityManagerWrapper wrapper)
         {
             m_built = true;
 

@@ -10,6 +10,17 @@ namespace Plugins.ECSEntityBuilder
         public EntityManagerWrapper EntityManagerWrapper { get; }
         public EntityVariableMap Variables { get; }
 
+        public static EntityWrapper CreateEntity()
+        {
+            var entityManagerWrapper = EntityManagerWrapper.Default;
+            return new EntityWrapper(entityManagerWrapper.CreateEntity(), entityManagerWrapper);
+        }
+        
+        public static EntityWrapper CreateEntity(EntityManagerWrapper entityManagerWrapper)
+        {
+            return new EntityWrapper(entityManagerWrapper.CreateEntity(), entityManagerWrapper);
+        }
+        
         public static EntityWrapper Wrap(Entity entity)
         {
             return new EntityWrapper(entity);

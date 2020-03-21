@@ -68,6 +68,23 @@ namespace Plugins.ECSEntityBuilder
             return AddStep(new SetPosition(position));
         }
 
+        public TChild SetRotation(quaternion rotation)
+        {
+            return AddStep(new SetRotation(rotation));
+        }
+
+        public TChild SetRotation(float3 euler)
+        {
+            return AddStep(new SetRotation(quaternion.Euler(euler)));
+        }
+
+        public TChild SetRotationAngles(float3 eulerAngles)
+        {
+            return AddStep(new SetRotation(quaternion.Euler(
+                math.radians(eulerAngles.x), math.radians(eulerAngles.y), math.radians(eulerAngles.z)
+            )));
+        }
+
         public TChild AddSharedComponentData<T>(T component) where T : struct, ISharedComponentData
         {
             return AddStep(new AddSharedComponentData<T>(component));

@@ -63,6 +63,12 @@ namespace Plugins.ECSEntityBuilder
             return AddStep(new SetComponentData<T>(component));
         }
 
+        public TChild SetName(string name)
+        {
+            data.name = name;
+            return Self;
+        }
+
         public TChild SetPosition(float3 position)
         {
             return AddStep(new SetPosition(position));

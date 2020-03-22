@@ -14,7 +14,13 @@ namespace Plugins.ECSEntityBuilder.Steps
         public void Process(EntityManagerWrapper wrapper, EntityVariableMap variables, ref EntityBuilderData data)
         {
             data.entity = wrapper.CreateEntity(GetEntityArchetype(wrapper));
-            wrapper.SetName(data.entity, typeof(T).Name + " " + data.entity.Index);
+
+#if UNITY_EDITOR
+            if (data.name != null)
+                wrapper.SetName(data.entity, data.name);
+            else
+                wrapper.SetName(data.entity, typeof(T).Name);
+#endif
         }
     }
 }

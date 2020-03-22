@@ -1,4 +1,6 @@
 using System;
+using Plugins.ECSEntityBuilder.Components;
+using Unity.Collections;
 using Unity.Entities;
 
 namespace Plugins.ECSEntityBuilder
@@ -72,7 +74,10 @@ namespace Plugins.ECSEntityBuilder
                     EntityManager.SetName(entity, name);
                     return;
                 case EntityManagerType.ENTITY_COMMAND_BUFFER:
+                    EntityCommandBuffer.AddComponent(entity, new SetName {Value = new NativeString64(name)});
+                    return;
                 case EntityManagerType.ENTITY_COMMAND_BUFFER_CONCURRENT:
+                    EntityCommandBufferConcurrent.AddComponent(EntityCommandBufferJobIndex, entity, new SetName {Value = new NativeString64(name)});
                     return;
             }
 
@@ -169,6 +174,17 @@ namespace Plugins.ECSEntityBuilder
             {
                 case EntityManagerType.ENTITY_MANAGER:
                     return EntityManager.GetBuffer<T>(entity);
+            }
+
+            throw new NotImplementedException();
+        }
+
+        public bool HasComponent<T>(Entity entity) where T : struct
+        {
+            switch (Type)
+            {
+                case EntityManagerType.ENTITY_MANAGER:
+                    return EntityManager.HasComponent<T>(entity);
             }
 
             throw new NotImplementedException();

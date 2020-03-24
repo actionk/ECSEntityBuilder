@@ -69,9 +69,9 @@ namespace Plugins.ECSEntityBuilder
             return Self;
         }
 
-        public TChild SetPosition(float3 position)
+        public virtual TChild SetTranslation(float3 translation)
         {
-            return AddStep(new SetPosition(position));
+            return AddStep(new SetTranslation(translation));
         }
 
         public TChild SetRotation(quaternion rotation)

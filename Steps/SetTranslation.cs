@@ -4,11 +4,11 @@ using Unity.Transforms;
 
 namespace Plugins.ECSEntityBuilder.Steps
 {
-    public class SetPosition : IEntityBuilderStep
+    public class SetTranslation : IEntityBuilderStep
     {
         private float3 m_position;
 
-        public SetPosition(float3 position)
+        public SetTranslation(float3 position)
         {
             m_position = position;
         }

@@ -15,12 +15,12 @@ namespace Plugins.ECSEntityBuilder
             var entityManagerWrapper = EntityManagerWrapper.Default;
             return new EntityWrapper(entityManagerWrapper.CreateEntity(), entityManagerWrapper);
         }
-        
+
         public static EntityWrapper CreateEntity(EntityManagerWrapper entityManagerWrapper)
         {
             return new EntityWrapper(entityManagerWrapper.CreateEntity(), entityManagerWrapper);
         }
-        
+
         public static EntityWrapper Wrap(Entity entity)
         {
             return new EntityWrapper(entity);
@@ -117,6 +117,14 @@ namespace Plugins.ECSEntityBuilder
         public DynamicBuffer<T> GetBuffer<T>() where T : struct, IBufferElementData
         {
             return EntityManagerWrapper.GetBuffer<T>(Entity);
+        }
+
+        public DynamicBuffer<T> GetOrCreateBuffer<T>() where T : struct, IBufferElementData
+        {
+            if (EntityManagerWrapper.HasComponent<T>(Entity))
+                return EntityManagerWrapper.GetBuffer<T>(Entity);
+
+            return AddBuffer<T>();
         }
 
         public EntityWrapper Destroy()

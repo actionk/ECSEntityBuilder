@@ -17,6 +17,7 @@ namespace Plugins.ECSEntityBuilder
         private bool m_built;
         private readonly EntityVariableMap m_variables = new EntityVariableMap();
         private readonly LinkedList<IEntityBuilderStep> m_steps = new LinkedList<IEntityBuilderStep>();
+        private readonly LinkedList<Action<EntityWrapper>> m_postBuildActions = new LinkedList<Action<EntityWrapper>>();
 
         ~EntityBuilder()
         {
@@ -110,6 +111,12 @@ namespace Plugins.ECSEntityBuilder
         {
         }
 
+        public TChild AddPostBuildAction(Action<EntityWrapper> postBuildAction)
+        {
+            m_postBuildActions.AddLast(postBuildAction);
+            return Self;
+        }
+
         public Entity Build()
         {
             return Build(EntityManagerWrapper.Default);
@@ -138,6 +145,13 @@ namespace Plugins.ECSEntityBuilder
 
             foreach (var step in m_steps)
                 step.Process(wrapper, m_variables, ref data);
+
+            if (m_postBuildActions.Count > 0)
+            {
+                var entityWrapper = EntityWrapper.Wrap(data.entity);
+                foreach (var postBuildAction in m_postBuildActions)
+                    postBuildAction.Invoke(entityWrapper);
+            }
 
             return data.entity;
         }

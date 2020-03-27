@@ -26,7 +26,7 @@ namespace Plugins.ECSEntityBuilder
         {
             return new EntityManagerWrapper(dstManager);
         }
-        
+
         public EntityManagerWrapper(EntityManager entityManager)
         {
             EntityManager = entityManager;
@@ -234,6 +234,17 @@ namespace Plugins.ECSEntityBuilder
                     return EntityCommandBuffer.Instantiate(prefabEntity);
                 case EntityManagerType.ENTITY_COMMAND_BUFFER_CONCURRENT:
                     return EntityCommandBufferConcurrent.Instantiate(EntityCommandBufferJobIndex, prefabEntity);
+            }
+
+            throw new NotImplementedException();
+        }
+
+        public T GetComponentData<T>(Entity entity) where T : struct, IComponentData
+        {
+            switch (Type)
+            {
+                case EntityManagerType.ENTITY_MANAGER:
+                    return EntityManager.GetComponentData<T>(entity);
             }
 
             throw new NotImplementedException();

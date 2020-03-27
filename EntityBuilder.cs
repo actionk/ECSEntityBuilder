@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Plugins.ECSEntityBuilder.Archetypes;
+using Plugins.ECSEntityBuilder.InstantiationStrategy;
 using Plugins.ECSEntityBuilder.Steps;
 using Plugins.ECSEntityBuilder.Variables;
 using Unity.Entities;
@@ -10,11 +12,10 @@ namespace Plugins.ECSEntityBuilder
 {
     public abstract class EntityBuilder<TChild>
     {
-        protected EntityBuilderData data = new EntityBuilderData();
-
         protected abstract TChild Self { get; }
 
         private bool m_built;
+        private IEntityCreationStrategy m_creationStrategy;
         private readonly EntityVariableMap m_variables = new EntityVariableMap();
         private readonly LinkedList<IEntityBuilderStep> m_steps = new LinkedList<IEntityBuilderStep>();
         private readonly LinkedList<Action<EntityWrapper>> m_postBuildActions = new LinkedList<Action<EntityWrapper>>();
@@ -41,70 +42,106 @@ namespace Plugins.ECSEntityBuilder
 
         protected TChild CreateEmpty()
         {
-            return AddStep(new CreateEntity());
+            m_creationStrategy = new CreateEmptyStrategy();
+            return Self;
         }
 
         protected TChild CreateFromArchetype<T>() where T : IArchetypeDescriptor
         {
-            return AddStep(new CreateEntityFromArchetype<T>());
+            m_creationStrategy = new CreateFromArchetypeStrategy<T>();
+            return Self;
         }
 
         protected TChild CreateFromPrefab(Entity prefabEntity)
         {
-            return AddStep(new Instantiate(prefabEntity));
+            m_creationStrategy = new CreateFromPrefabStrategy(prefabEntity);
+            return Self;
         }
 
         public TChild AddComponentData<T>(T component) where T : struct, IComponentData
         {
-            return AddStep(new AddComponentData<T>(component));
+            GetOrCreateGenericStep<AddComponentDataStep<T>, T>().SetValue(component);
+            return Self;
         }
 
         public TChild SetComponentData<T>(T component) where T : struct, IComponentData
         {
-            return AddStep(new SetComponentData<T>(component));
+            GetOrCreateStep<SetComponentDataStep<T>>().SetValue(component);
+            return Self;
         }
 
         public TChild SetName(string name)
         {
-            data.name = name;
+            GetOrCreateStep<SetNameStep>().SetValue(name);
             return Self;
         }
 
-        public virtual TChild SetTranslation(float3 translation)
+        public TChild SetTranslation(float3 translation)
         {
-            return AddStep(new SetTranslation(translation));
+            GetOrCreateStep<SetTranslationStep>().SetValue(translation);
+            return Self;
         }
 
         public TChild SetRotation(quaternion rotation)
         {
-            return AddStep(new SetRotation(rotation));
+            GetOrCreateStep<SetRotationStep>().SetValue(rotation);
+            return Self;
         }
 
         public TChild SetRotation(float3 euler)
         {
-            return AddStep(new SetRotation(quaternion.Euler(euler)));
+            GetOrCreateStep<SetRotationStep>().SetValue(quaternion.Euler(euler));
+            return Self;
         }
 
         public TChild SetRotationAngles(float3 eulerAngles)
         {
-            return AddStep(new SetRotation(quaternion.Euler(
+            GetOrCreateStep<SetRotationStep>().SetValue(quaternion.Euler(
                 math.radians(eulerAngles.x), math.radians(eulerAngles.y), math.radians(eulerAngles.z)
-            )));
+            ));
+            return Self;
         }
 
         public TChild AddSharedComponentData<T>(T component) where T : struct, ISharedComponentData
         {
-            return AddStep(new AddSharedComponentData<T>(component));
+            GetOrCreateGenericStep<AddSharedComponentDataStep<T>, T>().SetValue(component);
+            return Self;
+        }
+
+        public T GetOrCreateGenericStep<T, TGenericValue>() where T : IEntityBuilderGenericStep<TGenericValue>
+        {
+            var singletonStep = m_steps.FirstOrDefault(x => x is IEntityBuilderGenericStep<TGenericValue>);
+            if (singletonStep != null)
+                return (T) singletonStep;
+
+            var createdSingletonStep = Activator.CreateInstance<T>();
+            m_steps.AddLast(createdSingletonStep);
+            return createdSingletonStep;
+        }
+
+        public T GetOrCreateStep<T>() where T : IEntityBuilderStep
+        {
+            var singletonStep = m_steps.FirstOrDefault(x => x.GetType() == typeof(T));
+            if (singletonStep != null)
+                return (T) singletonStep;
+
+            var createdSingletonStep = Activator.CreateInstance<T>();
+            m_steps.AddLast(createdSingletonStep);
+            return createdSingletonStep;
         }
 
         public TChild AddBuffer<T>(params T[] elements) where T : struct, IBufferElementData
         {
-            return AddStep(new AddBuffer<T>(elements));
+            var step = GetOrCreateGenericStep<AddBufferStep<T>, T>();
+            foreach (var element in elements)
+                step.Add(element);
+            return Self;
         }
 
-        public TChild AddBuffer<T>(Action<EntityManagerWrapper> callback) where T : struct, IBufferElementData
+        public TChild AddElementToBuffer<T>(T element) where T : struct, IBufferElementData
         {
-            return AddStep(new AddBuffer<T>(callback));
+            GetOrCreateGenericStep<AddBufferStep<T>, T>().Add(element);
+            return Self;
         }
 
         public TChild AddPostBuildAction(Action<EntityWrapper> postBuildAction)
@@ -115,13 +152,13 @@ namespace Plugins.ECSEntityBuilder
 
         public TChild SetParent(Entity entity)
         {
-            AddStep(new SetParent(entity));
+            GetOrCreateStep<SetParentStep>().SetValue(entity);
             return Self;
         }
 
         public TChild SetScale(float scale)
         {
-            AddStep(new SetScale(scale));
+            GetOrCreateStep<SetScaleStep>().SetValue(scale);
             return Self;
         }
 
@@ -148,22 +185,23 @@ namespace Plugins.ECSEntityBuilder
         public virtual Entity Build(EntityManagerWrapper wrapper)
         {
             m_built = true;
+            var entity = m_creationStrategy.Create(wrapper, m_variables);
 
             OnPreBuild(wrapper);
 
             foreach (var step in m_steps)
-                step.Process(wrapper, m_variables, ref data);
+                step.Process(wrapper, m_variables, entity);
 
-            OnPostBuild(wrapper, data.entity);
+            OnPostBuild(wrapper, entity);
 
             if (m_postBuildActions.Count > 0)
             {
-                var entityWrapper = EntityWrapper.Wrap(data.entity);
+                var entityWrapper = EntityWrapper.Wrap(entity);
                 foreach (var postBuildAction in m_postBuildActions)
                     postBuildAction.Invoke(entityWrapper);
             }
 
-            return data.entity;
+            return entity;
         }
 
         protected virtual void OnPreBuild(EntityManagerWrapper wrapper)

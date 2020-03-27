@@ -107,10 +107,6 @@ namespace Plugins.ECSEntityBuilder
             return AddStep(new AddBuffer<T>(callback));
         }
 
-        public virtual void OnBuild(EntityManagerWrapper wrapper, Entity dataEntity)
-        {
-        }
-
         public TChild AddPostBuildAction(Action<EntityWrapper> postBuildAction)
         {
             m_postBuildActions.AddLast(postBuildAction);
@@ -141,10 +137,12 @@ namespace Plugins.ECSEntityBuilder
         {
             m_built = true;
 
-            OnBuild(wrapper, data.entity);
+            OnPreBuild(wrapper);
 
             foreach (var step in m_steps)
                 step.Process(wrapper, m_variables, ref data);
+
+            OnPostBuild(wrapper, data.entity);
 
             if (m_postBuildActions.Count > 0)
             {
@@ -154,6 +152,14 @@ namespace Plugins.ECSEntityBuilder
             }
 
             return data.entity;
+        }
+
+        protected virtual void OnPreBuild(EntityManagerWrapper wrapper)
+        {
+        }
+
+        protected virtual void OnPostBuild(EntityManagerWrapper wrapper, Entity entity)
+        {
         }
 
         public EntityWrapper BuildAndWrap(EntityManagerWrapper wrapper)

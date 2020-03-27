@@ -113,6 +113,18 @@ namespace Plugins.ECSEntityBuilder
             return Self;
         }
 
+        public TChild SetParent(Entity entity)
+        {
+            AddStep(new SetParent(entity));
+            return Self;
+        }
+
+        public TChild SetScale(float scale)
+        {
+            AddStep(new SetScale(scale));
+            return Self;
+        }
+
         public Entity Build()
         {
             return Build(EntityManagerWrapper.Default);

@@ -133,5 +133,10 @@ namespace Plugins.ECSEntityBuilder
             Entity = Entity.Null;
             return this;
         }
+
+        public T GetComponentData<T>() where T : struct, IComponentData
+        {
+            return EntityManagerWrapper.GetComponentData<T>(Entity);
+        }
     }
 }

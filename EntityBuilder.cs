@@ -29,6 +29,11 @@ namespace Plugins.ECSEntityBuilder
             }
         }
 
+        public bool HasStep<T, TGeneric>() where T : IEntityBuilderGenericStep<TGeneric>
+        {
+            return m_steps.FirstOrDefault(x => x is IEntityBuilderGenericStep<TGeneric>) != null;
+        }
+
         public TChild AddStep(IEntityBuilderStep step)
         {
             m_steps.AddLast(step);

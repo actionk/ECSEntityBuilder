@@ -15,10 +15,7 @@ namespace Plugins.ECSEntityBuilder.Steps
 
         public void Process(EntityManagerWrapper wrapper, EntityVariableMap variables, Entity entity)
         {
-            if (wrapper.HasComponent<Scale>(entity))
-                wrapper.SetComponentData(entity, new Scale {Value = m_scale});
-            else
-                wrapper.AddComponentData(entity, new Scale {Value = m_scale});
+            wrapper.AddComponentData(entity, new Scale {Value = m_scale});
         }
     }
 }

@@ -3,6 +3,7 @@ using Unity.Entities;
 
 namespace Plugins.ECSEntityBuilder.Systems
 {
+    [UpdateInGroup(typeof(InitializationSystemGroup))]
     public class SetNameSystem : ComponentSystem
     {
         protected override void OnUpdate()

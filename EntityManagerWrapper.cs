@@ -22,6 +22,11 @@ namespace Plugins.ECSEntityBuilder
         public EntityCommandBuffer EntityCommandBuffer { get; }
         public int EntityCommandBufferJobIndex { get; }
 
+        public override string ToString()
+        {
+            return $"{nameof(Type)}: {Type}";
+        }
+
         public static EntityManagerWrapper FromManager(EntityManager dstManager)
         {
             return new EntityManagerWrapper(dstManager);

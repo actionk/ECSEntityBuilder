@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
-using Plugins.ECSEntityBuilder.Archetypes;
+using System.Linq;
+using System.Reflection;
+using Plugins.Framework.Logs;
 using Unity.Entities;
 using UnityEngine;
 
-namespace Plugins.ECSEntityBuilder
+namespace Plugins.ECSEntityBuilder.Archetypes
 {
     public class EntityArchetypeManager
     {
@@ -31,11 +33,24 @@ namespace Plugins.ECSEntityBuilder
 
         private Dictionary<Type, EntityArchetype> m_archetypes = new Dictionary<Type, EntityArchetype>();
 
+        public void InitializeArchetypes(Assembly assembly)
+        {
+            var typesToInitialize = new LinkedList<Type>();
+            foreach (Type type in assembly.GetTypes())
+            {
+                var archetypeAttribute = Attribute.GetCustomAttribute(type, typeof(ArchetypeAttribute));
+                if (archetypeAttribute != null) typesToInitialize.AddLast(type);
+            }
+
+            InitializeArchetypes(typesToInitialize.ToArray());
+        }
+
         public void InitializeArchetypes(params Type[] types)
         {
             var wrapper = EntityManagerWrapper.Default;
             foreach (var type in types)
             {
+                UnityLogger.Info($"Initializing archetype {type}");
                 GetOrCreateArchetype(wrapper, type);
             }
         }
@@ -59,9 +74,20 @@ namespace Plugins.ECSEntityBuilder
                     throw new NotImplementedException($"Archetype descriptor {archetypeType} should implement {typeof(IArchetypeDescriptor)} interface and have an empty constructor");
                 }
 
-                var archetype = wrapper.CreateArchetype(instance.Components);
-                m_archetypes[archetypeType] = archetype;
-                return archetype;
+                try
+                {
+                    var archetype = wrapper.CreateArchetype(instance.Components);
+                    m_archetypes[archetypeType] = archetype;
+                    return archetype;
+                }
+                catch (NotImplementedException)
+                {
+                    throw new NotImplementedException($"Failed to instantiate archetype from archetype descriptor {archetypeType} because CreateArchetype() method is not supported in this wrapper: {wrapper}");
+                }
+            }
+            catch (NotImplementedException)
+            {
+                throw;
             }
             catch (Exception e)
             {

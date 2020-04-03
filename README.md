@@ -159,6 +159,27 @@ EntityArchetypeManager.Instance.InitializeArchetypes(
 );
 ```
 
+Alternatively, you can initialize archetypes by marking those classes with [Archetype] attribute:
+
+```
+[Archetype]
+public class ArchetypeZone : IArchetypeDescriptor
+{
+    public string Name => "Zone";
+
+    public ComponentType[] Components => new ComponentType[]
+    {
+        ... components ...
+    };
+}
+```
+
+Then you can initialize archetypes for all the marked classes in this assembly with:
+
+```
+EntityArchetypeManager.Instance.InitializeArchetypes(Assembly.GetCallingAssembly());
+```
+
 ### Extending the EntityWrapper/EntityBuilder
 
 You can easily add your own methods to EntityWrapper:

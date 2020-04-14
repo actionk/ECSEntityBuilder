@@ -25,11 +25,13 @@ namespace Plugins.ECSEntityBuilder.Archetypes
             get { return INSTANCE; }
         }
 
+        #if UNITY_EDITOR
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         public static void Reset()
         {
             INSTANCE = new EntityArchetypeManager();
         }
+        #endif
 
         private Dictionary<Type, EntityArchetype> m_archetypes = new Dictionary<Type, EntityArchetype>();
 

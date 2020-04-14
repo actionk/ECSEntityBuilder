@@ -81,7 +81,11 @@ namespace Plugins.ECSEntityBuilder
             switch (Type)
             {
                 case EntityManagerType.ENTITY_MANAGER:
+#if UNITY_EDITOR
                     EntityManager.SetName(entity, name);
+#else
+                    EntityManager.AddComponentData(entity, new SetName {Value = new NativeString64(name)});
+#endif
                     return;
                 case EntityManagerType.ENTITY_COMMAND_BUFFER:
                     EntityCommandBuffer.AddComponent(entity, new SetName {Value = new NativeString64(name)});

@@ -14,12 +14,12 @@ namespace Plugins.ECSEntityBuilder
     {
         protected abstract TChild Self { get; }
 
-        private bool m_built;
-        private IEntityCreationStrategy m_creationStrategy;
-        private readonly EntityVariableMap m_variables = new EntityVariableMap();
-        private readonly LinkedList<IEntityBuilderStep> m_steps = new LinkedList<IEntityBuilderStep>();
-        private readonly LinkedList<Action<EntityWrapper>> m_postBuildActions = new LinkedList<Action<EntityWrapper>>();
-        private readonly CreatedEntityParams m_createdEntityParams = new CreatedEntityParams();
+        protected bool m_built;
+        protected IEntityCreationStrategy m_creationStrategy = CreateEmptyStrategy.DEFAULT;
+        protected readonly EntityVariableMap m_variables = new EntityVariableMap();
+        protected readonly LinkedList<IEntityBuilderStep> m_steps = new LinkedList<IEntityBuilderStep>();
+        protected readonly LinkedList<Action<EntityWrapper>> m_postBuildActions = new LinkedList<Action<EntityWrapper>>();
+        protected readonly CreatedEntityParams m_createdEntityParams = new CreatedEntityParams();
 
         ~EntityBuilder()
         {

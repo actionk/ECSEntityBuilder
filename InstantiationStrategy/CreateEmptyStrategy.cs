@@ -9,5 +9,7 @@ namespace Plugins.ECSEntityBuilder.InstantiationStrategy
         {
             return wrapper.CreateEntity();
         }
+
+        public static readonly CreateEmptyStrategy DEFAULT = new CreateEmptyStrategy();
     }
 }

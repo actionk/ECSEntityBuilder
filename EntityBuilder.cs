@@ -19,7 +19,6 @@ namespace Plugins.ECSEntityBuilder
         protected readonly EntityVariableMap m_variables = new EntityVariableMap();
         protected readonly LinkedList<IEntityBuilderStep> m_steps = new LinkedList<IEntityBuilderStep>();
         protected readonly LinkedList<Action<EntityWrapper>> m_postBuildActions = new LinkedList<Action<EntityWrapper>>();
-        protected readonly CreatedEntityParams m_createdEntityParams = new CreatedEntityParams();
 
         ~EntityBuilder()
         {
@@ -84,14 +83,12 @@ namespace Plugins.ECSEntityBuilder
 
         public TChild SetTranslation(float3 translation)
         {
-            m_createdEntityParams.translation = translation;
             GetOrCreateStep<SetTranslationStep>().SetValue(translation);
             return Self;
         }
 
         public TChild SetRotation(quaternion quaternion)
         {
-            m_createdEntityParams.rotation = quaternion;
             GetOrCreateStep<SetRotationStep>().SetValue(quaternion);
             return Self;
         }
@@ -99,7 +96,6 @@ namespace Plugins.ECSEntityBuilder
         public TChild SetRotation(float3 euler)
         {
             var quaternion = Unity.Mathematics.quaternion.Euler(euler);
-            m_createdEntityParams.rotation = quaternion;
             GetOrCreateStep<SetRotationStep>().SetValue(quaternion);
             return Self;
         }
@@ -109,7 +105,6 @@ namespace Plugins.ECSEntityBuilder
             var quaternion = Unity.Mathematics.quaternion.Euler(
                 math.radians(eulerAngles.x), math.radians(eulerAngles.y), math.radians(eulerAngles.z)
             );
-            m_createdEntityParams.rotation = quaternion;
             GetOrCreateStep<SetRotationStep>().SetValue(quaternion);
             return Self;
         }
@@ -170,7 +165,6 @@ namespace Plugins.ECSEntityBuilder
 
         public TChild SetScale(float scale)
         {
-            m_createdEntityParams.scale = scale;
             GetOrCreateStep<SetScaleStep>().SetValue(scale);
             return Self;
         }
@@ -205,7 +199,7 @@ namespace Plugins.ECSEntityBuilder
             foreach (var step in m_steps)
                 step.Process(wrapper, m_variables, entity);
 
-            OnPostBuild(wrapper, entity, m_createdEntityParams);
+            OnPostBuild(wrapper, entity);
 
             if (m_postBuildActions.Count > 0)
             {
@@ -221,7 +215,7 @@ namespace Plugins.ECSEntityBuilder
         {
         }
 
-        protected virtual void OnPostBuild(EntityManagerWrapper wrapper, Entity entity, CreatedEntityParams createdEntityParams)
+        protected virtual void OnPostBuild(EntityManagerWrapper wrapper, Entity entity)
         {
         }
 

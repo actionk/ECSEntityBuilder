@@ -180,6 +180,16 @@ Then you can initialize archetypes for all the marked classes in this assembly w
 EntityArchetypeManager.Instance.InitializeArchetypes(Assembly.GetCallingAssembly());
 ```
 
+### Initialising Archetypes in specific worlds
+
+By default all the archetypes will be initialized in World.DefaultGameObjectInjectWorld
+If you want to change this, you can specify the world by passing World parameter in the Attribute:
+
+```
+[Archetype(WorldType.SERVER)]
+public class ServerPlayerArchetype : IArchetypeDescriptor
+```
+
 ### Extending the EntityWrapper/EntityBuilder
 
 You can easily add your own methods to EntityWrapper:

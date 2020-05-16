@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Plugins.Framework.Logs;
+using Plugins.ECSEntityBuilder.Worlds;
 using Unity.Entities;
 using UnityEngine;
 
@@ -10,6 +10,8 @@ namespace Plugins.ECSEntityBuilder.Archetypes
 {
     public class EntityArchetypeManager
     {
+        #region Singleton
+
         private static EntityArchetypeManager INSTANCE = new EntityArchetypeManager();
 
         static EntityArchetypeManager()
@@ -25,15 +27,19 @@ namespace Plugins.ECSEntityBuilder.Archetypes
             get { return INSTANCE; }
         }
 
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
+        // for quick play mode entering 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         public static void Reset()
         {
             INSTANCE = new EntityArchetypeManager();
         }
-        #endif
+#endif
 
-        private Dictionary<Type, EntityArchetype> m_archetypes = new Dictionary<Type, EntityArchetype>();
+        #endregion
+
+        private readonly Dictionary<Type, EntityArchetype> m_archetypes = new Dictionary<Type, EntityArchetype>();
+
 
         public void InitializeArchetypes(Assembly assembly)
         {
@@ -49,11 +55,15 @@ namespace Plugins.ECSEntityBuilder.Archetypes
 
         public void InitializeArchetypes(params Type[] types)
         {
-            var wrapper = EntityManagerWrapper.Default;
             foreach (var type in types)
             {
-                UnityLogger.Info($"Initializing archetype {type}");
-                GetOrCreateArchetype(wrapper, type);
+                var world = World.DefaultGameObjectInjectionWorld;
+
+                var archetypeAttribute = (ArchetypeAttribute) Attribute.GetCustomAttribute(type, typeof(ArchetypeAttribute));
+                if (archetypeAttribute != null)
+                    world = WorldManager.Instance.GetWorldByType(archetypeAttribute.World);
+
+                GetOrCreateArchetype(EntityManagerWrapper.FromManager(world.EntityManager), type);
             }
         }
 

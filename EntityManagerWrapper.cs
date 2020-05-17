@@ -2,6 +2,7 @@ using System;
 using Plugins.ECSEntityBuilder.Components;
 using Unity.Collections;
 using Unity.Entities;
+using UnityEngine;
 
 namespace Plugins.ECSEntityBuilder
 {
@@ -254,6 +255,18 @@ namespace Plugins.ECSEntityBuilder
             {
                 case EntityManagerType.ENTITY_MANAGER:
                     return EntityManager.GetComponentData<T>(entity);
+            }
+
+            throw new NotImplementedException();
+        }
+
+        public void AddComponentObject<T>(Entity entity, T componentObject) where T : Component
+        {
+            switch (Type)
+            {
+                case EntityManagerType.ENTITY_MANAGER:
+                    EntityManager.AddComponentObject(entity, componentObject);
+                    return;
             }
 
             throw new NotImplementedException();

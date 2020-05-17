@@ -7,6 +7,7 @@ using Plugins.ECSEntityBuilder.Steps;
 using Plugins.ECSEntityBuilder.Variables;
 using Unity.Entities;
 using Unity.Mathematics;
+using UnityEngine;
 
 namespace Plugins.ECSEntityBuilder
 {
@@ -66,6 +67,12 @@ namespace Plugins.ECSEntityBuilder
         public TChild AddComponentData<T>(T component) where T : struct, IComponentData
         {
             GetOrCreateGenericStep<AddComponentDataStep<T>, T>().SetValue(component);
+            return Self;
+        }
+
+        public TChild AddComponentObject<T>(T componentObject) where T : Component
+        {
+            GetOrCreateGenericStep<AddComponentObjectStep<T>, T>().SetValue(componentObject);
             return Self;
         }
 

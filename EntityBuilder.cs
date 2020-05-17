@@ -5,6 +5,7 @@ using Plugins.ECSEntityBuilder.Archetypes;
 using Plugins.ECSEntityBuilder.InstantiationStrategy;
 using Plugins.ECSEntityBuilder.Steps;
 using Plugins.ECSEntityBuilder.Variables;
+using Plugins.ECSEntityBuilder.Worlds;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
@@ -54,7 +55,13 @@ namespace Plugins.ECSEntityBuilder
 
         protected TChild CreateFromArchetype<T>() where T : IArchetypeDescriptor
         {
-            m_creationStrategy = new CreateFromArchetypeStrategy<T>();
+            m_creationStrategy = new CreateFromArchetypeStrategy<T>(WorldType.DEFAULT);
+            return Self;
+        }
+
+        protected TChild CreateFromArchetype<T>(WorldType worldType) where T : IClientServerArchetypeDescriptor
+        {
+            m_creationStrategy = new CreateFromArchetypeStrategy<T>(worldType);
             return Self;
         }
 

@@ -1,19 +1,22 @@
 using Plugins.ECSEntityBuilder.Archetypes;
 using Plugins.ECSEntityBuilder.Variables;
+using Plugins.ECSEntityBuilder.Worlds;
 using Unity.Entities;
 
 namespace Plugins.ECSEntityBuilder.InstantiationStrategy
 {
     public class CreateFromArchetypeStrategy<T> : IEntityCreationStrategy where T : IArchetypeDescriptor
     {
-        private static EntityArchetype GetEntityArchetype(EntityManagerWrapper wrapper)
+        private readonly WorldType m_worldType;
+
+        public CreateFromArchetypeStrategy(WorldType worldType)
         {
-            return EntityArchetypeManager.Instance.GetOrCreateArchetype<T>(wrapper);
+            m_worldType = worldType;
         }
 
         public Entity Create(EntityManagerWrapper wrapper, EntityVariableMap variables)
         {
-            return wrapper.CreateEntity(GetEntityArchetype(wrapper));
+            return wrapper.CreateEntity(EntityArchetypeManager.Instance.GetOrCreateArchetype<T>(m_worldType));
         }
     }
 }

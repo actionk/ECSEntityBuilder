@@ -38,42 +38,54 @@ namespace Plugins.ECSEntityBuilder.Archetypes
 
         #endregion
 
-        private readonly Dictionary<Type, EntityArchetype> m_archetypes = new Dictionary<Type, EntityArchetype>();
+        private struct EntityArchetypeHolder
+        {
+            public EntityArchetype defaultArchetype;
+            public EntityArchetype clientArchetype;
+            public EntityArchetype serverArchetype;
+        }
+
+        private readonly Dictionary<Type, EntityArchetypeHolder> m_archetypes = new Dictionary<Type, EntityArchetypeHolder>();
 
 
         public void InitializeArchetypes(Assembly assembly)
         {
-            var typesToInitialize = new LinkedList<Type>();
-            foreach (Type type in assembly.GetTypes())
+            foreach (var type in assembly.GetTypes())
             {
                 var archetypeAttribute = Attribute.GetCustomAttribute(type, typeof(ArchetypeAttribute));
-                if (archetypeAttribute != null) typesToInitialize.AddLast(type);
+                if (archetypeAttribute != null) GetOrCreateArchetype(type);
             }
-
-            InitializeArchetypes(typesToInitialize.ToArray());
         }
 
         public void InitializeArchetypes(params Type[] types)
         {
             foreach (var type in types)
-            {
-                var world = World.DefaultGameObjectInjectionWorld;
-
-                var archetypeAttribute = (ArchetypeAttribute) Attribute.GetCustomAttribute(type, typeof(ArchetypeAttribute));
-                if (archetypeAttribute != null)
-                    world = WorldManager.Instance.GetWorldByType(archetypeAttribute.World);
-
-                GetOrCreateArchetype(EntityManagerWrapper.FromManager(world.EntityManager), type);
-            }
+                GetOrCreateArchetype(type);
         }
 
-        public EntityArchetype GetOrCreateArchetype<T>(EntityManagerWrapper wrapper) where T : IArchetypeDescriptor
+        public EntityArchetype GetOrCreateArchetype<T>() where T : IArchetypeDescriptor
+        {
+            return GetOrCreateArchetype<T>(WorldType.DEFAULT);
+        }
+
+        public EntityArchetype GetOrCreateArchetype<T>(WorldType worldType) where T : IArchetypeDescriptor
         {
             var archetypeType = typeof(T);
-            return GetOrCreateArchetype(wrapper, archetypeType);
+            var entityArchetypeHolder = GetOrCreateArchetype(archetypeType);
+            switch (worldType)
+            {
+                case WorldType.DEFAULT:
+                    return entityArchetypeHolder.defaultArchetype;
+                case WorldType.CLIENT:
+                    return entityArchetypeHolder.clientArchetype;
+                case WorldType.SERVER:
+                    return entityArchetypeHolder.serverArchetype;
+            }
+
+            throw new NotImplementedException();
         }
 
-        private EntityArchetype GetOrCreateArchetype(EntityManagerWrapper wrapper, Type archetypeType)
+        private EntityArchetypeHolder GetOrCreateArchetype(Type archetypeType)
         {
             if (m_archetypes.ContainsKey(archetypeType))
                 return m_archetypes[archetypeType];
@@ -86,15 +98,32 @@ namespace Plugins.ECSEntityBuilder.Archetypes
                     throw new NotImplementedException($"Archetype descriptor {archetypeType} should implement {typeof(IArchetypeDescriptor)} interface and have an empty constructor");
                 }
 
-                try
+                if (instance is IClientServerArchetypeDescriptor clientServerInstance)
                 {
-                    var archetype = wrapper.CreateArchetype(instance.Components);
-                    m_archetypes[archetypeType] = archetype;
-                    return archetype;
+                    var clientComponents = clientServerInstance.Components.Concat(clientServerInstance.ClientOnlyComponents).ToArray();
+                    var clientArchetype = WorldManager.Instance.Client.EntityManager.CreateArchetype(clientComponents);
+
+                    var serverComponents = clientServerInstance.Components.Concat(clientServerInstance.ServerOnlyComponents).ToArray();
+                    var serverArchetype = WorldManager.Instance.Server.EntityManager.CreateArchetype(serverComponents);
+
+                    var archetypeHolder = new EntityArchetypeHolder
+                    {
+                        clientArchetype = clientArchetype,
+                        serverArchetype = serverArchetype
+                    };
+                    m_archetypes[archetypeType] = archetypeHolder;
+                    return archetypeHolder;
                 }
-                catch (NotImplementedException)
+                else
                 {
-                    throw new NotImplementedException($"Failed to instantiate archetype from archetype descriptor {archetypeType} because CreateArchetype() method is not supported in this wrapper: {wrapper}");
+                    var archetype = WorldManager.Instance.Default.EntityManager.CreateArchetype(instance.Components);
+
+                    var archetypeHolder = new EntityArchetypeHolder
+                    {
+                        defaultArchetype = archetype
+                    };
+                    m_archetypes[archetypeType] = archetypeHolder;
+                    return archetypeHolder;
                 }
             }
             catch (NotImplementedException)

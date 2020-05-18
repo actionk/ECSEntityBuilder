@@ -14,13 +14,22 @@ git submodule add https://github.com/actionk/UnityECSEntityBuilder.git Assets/Pl
 Entity Wrapper allows you to wrap `Entity` with an object a modify it without the need of passing the Entity reference to the EntityManager over and over again.
 
 ```
-var entityWrapper = new EntityWrapper(entity);
-entityWrapper.SetComponentData(new Translation { Value = float3.zero });
-entityWrapper.AddBuffer<TaskBufferElement>();
-entityWrapper.AddBuffer(
-    new PathPositionBufferElement {position = new int2(0, 1)},
-    new PathPositionBufferElement {position = new int2(0, 2)}
-);
+var entityWrapper = new EntityWrapper(entity)
+    .SetComponentData(new Translation { Value = float3.zero });
+    .AddBuffer<TaskBufferElement>();
+    .AddBuffer(
+        new PathPositionBufferElement {position = new int2(0, 1)},
+        new PathPositionBufferElement {position = new int2(0, 2)}
+    );
+```
+
+You can also specify target entity manager / command buffer when creating a wrapper:
+
+```
+EntityWrapper.Wrap(entity, PostUpdateCommands)
+    .AddBuffer<MyBuffer>()
+    .SetComponentData(new Translation {Value = command.position})
+    .SetComponentData(new Scale {Value = 1.0f});
 ```
 
 ## EntityManagerWrapper

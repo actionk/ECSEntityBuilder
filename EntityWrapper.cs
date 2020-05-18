@@ -109,9 +109,15 @@ namespace Plugins.ECSEntityBuilder
             return this;
         }
 
-        public DynamicBuffer<T> AddBuffer<T>() where T : struct, IBufferElementData
+        public DynamicBuffer<T> AddBufferAndReturn<T>() where T : struct, IBufferElementData
         {
             return EntityManagerWrapper.AddBuffer<T>(Entity);
+        }
+
+        public EntityWrapper AddBuffer<T>() where T : struct, IBufferElementData
+        {
+            EntityManagerWrapper.AddBuffer<T>(Entity);
+            return this;
         }
 
         public EntityWrapper AddBuffer<T>(params T[] elements) where T : struct, IBufferElementData
@@ -124,7 +130,7 @@ namespace Plugins.ECSEntityBuilder
 
         public EntityWrapper AddElementToBuffer<T>(T element) where T : struct, IBufferElementData
         {
-            var buffer = EntityManagerWrapper.AddBuffer<T>(Entity);
+            var buffer = EntityManagerWrapper.GetOrCreateBuffer<T>(Entity);
             buffer.Add(element);
             return this;
         }
@@ -139,7 +145,7 @@ namespace Plugins.ECSEntityBuilder
             if (EntityManagerWrapper.HasComponent<T>(Entity))
                 return EntityManagerWrapper.GetBuffer<T>(Entity);
 
-            return AddBuffer<T>();
+            return AddBufferAndReturn<T>();
         }
 
         public EntityWrapper Destroy()

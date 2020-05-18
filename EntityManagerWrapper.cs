@@ -194,6 +194,12 @@ namespace Plugins.ECSEntityBuilder
             throw new NotImplementedException();
         }
 
+        public DynamicBuffer<T> GetOrCreateBuffer<T>(Entity entity) where T : struct, IBufferElementData
+        {
+            var isBufferExists = HasComponent<T>(entity);
+            return isBufferExists ? GetBuffer<T>(entity) : AddBuffer<T>(entity);
+        }
+
         public bool HasComponent<T>(Entity entity) where T : struct
         {
             switch (Type)

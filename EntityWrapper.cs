@@ -31,6 +31,21 @@ namespace Plugins.ECSEntityBuilder
             return new EntityWrapper(entity, entityManagerWrapper);
         }
 
+        public static EntityWrapper Wrap(Entity entity, EntityManager entityManager)
+        {
+            return new EntityWrapper(entity, EntityManagerWrapper.FromManager(entityManager));
+        }
+
+        public static EntityWrapper Wrap(Entity entity, EntityCommandBuffer entityCommandBuffer)
+        {
+            return new EntityWrapper(entity, EntityManagerWrapper.FromCommandBuffer(entityCommandBuffer));
+        }
+
+        public static EntityWrapper Wrap(Entity entity, EntityCommandBuffer.Concurrent entityCommandBuffer, int threadId)
+        {
+            return new EntityWrapper(entity, EntityManagerWrapper.FromJobCommandBuffer(entityCommandBuffer, threadId));
+        }
+
         public EntityWrapper(Entity entity, EntityManagerWrapper entityManagerWrapper, EntityVariableMap variables)
         {
             Entity = entity;

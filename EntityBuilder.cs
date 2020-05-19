@@ -223,7 +223,7 @@ namespace Plugins.ECSEntityBuilder
 
             if (m_postBuildActions.Count > 0)
             {
-                var entityWrapper = EntityWrapper.Wrap(entity);
+                var entityWrapper = EntityWrapper.Wrap(entity, wrapper);
                 foreach (var postBuildAction in m_postBuildActions)
                     postBuildAction.Invoke(entityWrapper);
             }

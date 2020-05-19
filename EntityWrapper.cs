@@ -16,6 +16,24 @@ namespace Plugins.ECSEntityBuilder
             return new EntityWrapper(entityManagerWrapper.CreateEntity(), entityManagerWrapper);
         }
 
+        public static EntityWrapper CreateEntity(EntityManager entityManager)
+        {
+            var entityManagerWrapper = EntityManagerWrapper.FromManager(entityManager);
+            return new EntityWrapper(entityManagerWrapper.CreateEntity(), entityManagerWrapper);
+        }
+
+        public static EntityWrapper CreateEntity(EntityCommandBuffer entityCommandBuffer)
+        {
+            var entityManagerWrapper = EntityManagerWrapper.FromCommandBuffer(entityCommandBuffer);
+            return new EntityWrapper(entityManagerWrapper.CreateEntity(), entityManagerWrapper);
+        }
+
+        public static EntityWrapper CreateEntity(int threadId, EntityCommandBuffer.Concurrent entityCommandBuffer)
+        {
+            var entityManagerWrapper = EntityManagerWrapper.FromJobCommandBuffer(entityCommandBuffer, threadId);
+            return new EntityWrapper(entityManagerWrapper.CreateEntity(), entityManagerWrapper);
+        }
+
         public static EntityWrapper CreateEntity(EntityManagerWrapper entityManagerWrapper)
         {
             return new EntityWrapper(entityManagerWrapper.CreateEntity(), entityManagerWrapper);
@@ -94,6 +112,12 @@ namespace Plugins.ECSEntityBuilder
         public EntityWrapper AddComponentData<T>(T component) where T : struct, IComponentData
         {
             EntityManagerWrapper.AddComponentData(Entity, component);
+            return this;
+        }
+
+        public EntityWrapper AddComponent<T>() where T : struct, IComponentData
+        {
+            EntityManagerWrapper.AddComponent<T>(Entity);
             return this;
         }
 

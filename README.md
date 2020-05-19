@@ -4,10 +4,12 @@ This project is a wrapper around Unity ECS entities that allows one to simplify 
 
 ## Install
 
-You can either just put the files into `Plugins/ECSEntityBuilder` or use it as a submodule:
+You can either just put the files into `Assets/Plugins/ECSEntityBuilder` or use it as a submodule:
 ```
 git submodule add https://github.com/actionk/UnityECSEntityBuilder.git Assets/Plugins/ECSEntityBuilder
 ```
+
+# Usage
 
 ## EntityWrapper
 

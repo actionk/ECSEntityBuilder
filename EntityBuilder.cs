@@ -71,6 +71,12 @@ namespace Plugins.ECSEntityBuilder
             return Self;
         }
 
+        public TChild AddComponent<T>() where T : struct, IComponentData
+        {
+            GetOrCreateGenericStep<AddComponentStep<T>, T>();
+            return Self;
+        }
+
         public TChild AddComponentData<T>(T component) where T : struct, IComponentData
         {
             GetOrCreateGenericStep<AddComponentDataStep<T>, T>().SetValue(component);

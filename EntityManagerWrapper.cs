@@ -132,6 +132,24 @@ namespace Plugins.ECSEntityBuilder
             throw new NotImplementedException();
         }
 
+        public void AddComponent<T>(Entity entity) where T : struct, IComponentData
+        {
+            switch (Type)
+            {
+                case EntityManagerType.ENTITY_MANAGER:
+                    EntityManager.AddComponent<T>(entity);
+                    return;
+                case EntityManagerType.ENTITY_COMMAND_BUFFER:
+                    EntityCommandBuffer.AddComponent<T>(entity);
+                    return;
+                case EntityManagerType.ENTITY_COMMAND_BUFFER_CONCURRENT:
+                    EntityCommandBufferConcurrent.AddComponent<T>(EntityCommandBufferJobIndex, entity);
+                    return;
+            }
+
+            throw new NotImplementedException();
+        }
+
         public void SetComponentData<T>(Entity entity, T component) where T : struct, IComponentData
         {
             switch (Type)

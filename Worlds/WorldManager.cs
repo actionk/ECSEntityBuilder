@@ -39,15 +39,23 @@ namespace Plugins.ECSEntityBuilder.Worlds
         public World Default { get; private set; }
         public World Client { get; private set; }
         public World Server { get; private set; }
+        public bool HasServerWorld { get; private set; }
+        public bool HasClientWorld { get; private set; }
 
         public void Initialize()
         {
             foreach (var world in World.All)
             {
                 if (world.GetExistingSystem<ClientSimulationSystemGroup>() != null)
+                {
                     Client = world;
+                    HasClientWorld = true;
+                }
                 else if (world.GetExistingSystem<ServerSimulationSystemGroup>() != null)
+                {
                     Server = world;
+                    HasServerWorld = true;
+                }
 
                 if (world.GetExistingSystem<TransformSystemGroup>() != null)
                     Default = world;
@@ -62,7 +70,7 @@ namespace Plugins.ECSEntityBuilder.Worlds
                 case WorldType.SERVER: return Server;
                 case WorldType.CLIENT: return Client;
             }
-            
+
             throw new NotImplementedException();
         }
     }

@@ -183,5 +183,10 @@ namespace Plugins.ECSEntityBuilder
         {
             return EntityManagerWrapper.GetComponentData<T>(Entity);
         }
+
+        public bool HasComponent<T>() where T : struct, IComponentData
+        {
+            return EntityManagerWrapper.HasComponent<T>(Entity);
+        }
     }
 }

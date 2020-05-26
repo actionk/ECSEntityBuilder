@@ -101,10 +101,10 @@ namespace Plugins.ECSEntityBuilder.Archetypes
                 if (instance is IClientServerArchetypeDescriptor clientServerInstance)
                 {
                     var clientComponents = clientServerInstance.Components.Concat(clientServerInstance.ClientOnlyComponents).ToArray();
-                    var clientArchetype = WorldManager.Instance.Client.EntityManager.CreateArchetype(clientComponents);
+                    var clientArchetype = EntityWorldManager.Instance.Client.EntityManager.CreateArchetype(clientComponents);
 
                     var serverComponents = clientServerInstance.Components.Concat(clientServerInstance.ServerOnlyComponents).ToArray();
-                    var serverArchetype = WorldManager.Instance.Server.EntityManager.CreateArchetype(serverComponents);
+                    var serverArchetype = EntityWorldManager.Instance.Server.EntityManager.CreateArchetype(serverComponents);
 
                     var archetypeHolder = new EntityArchetypeHolder
                     {
@@ -116,7 +116,7 @@ namespace Plugins.ECSEntityBuilder.Archetypes
                 }
                 else
                 {
-                    var archetype = WorldManager.Instance.Default.EntityManager.CreateArchetype(instance.Components);
+                    var archetype = EntityWorldManager.Instance.Default.EntityManager.CreateArchetype(instance.Components);
 
                     var archetypeHolder = new EntityArchetypeHolder
                     {

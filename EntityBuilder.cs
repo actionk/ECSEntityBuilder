@@ -200,6 +200,11 @@ namespace Plugins.ECSEntityBuilder
             return Build(new EntityManagerWrapper(entityManager));
         }
 
+        public Entity Build(WorldType worldType)
+        {
+            return Build(new EntityManagerWrapper(EntityWorldManager.Instance.GetWorldByType(worldType).EntityManager));
+        }
+
         public Entity Build(EntityCommandBuffer entityCommandBuffer)
         {
             return Build(EntityManagerWrapper.FromCommandBuffer(entityCommandBuffer));

@@ -6,21 +6,21 @@ using UnityEngine;
 
 namespace Plugins.ECSEntityBuilder.Worlds
 {
-    public class WorldManager
+    public class EntityWorldManager
     {
         #region Singleton
 
-        private static WorldManager INSTANCE = new WorldManager();
+        private static EntityWorldManager INSTANCE = new EntityWorldManager();
 
-        static WorldManager()
+        static EntityWorldManager()
         {
         }
 
-        private WorldManager()
+        private EntityWorldManager()
         {
         }
 
-        public static WorldManager Instance
+        public static EntityWorldManager Instance
         {
             get { return INSTANCE; }
         }
@@ -30,7 +30,7 @@ namespace Plugins.ECSEntityBuilder.Worlds
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         public static void Reset()
         {
-            INSTANCE = new WorldManager();
+            INSTANCE = new EntityWorldManager();
         }
 #endif
 
@@ -38,9 +38,14 @@ namespace Plugins.ECSEntityBuilder.Worlds
 
         public World Default { get; private set; }
         public World Client { get; private set; }
+        public uint ClientTick => m_clientSimulationSystemGroup.ServerTick;
         public World Server { get; private set; }
+        public uint ServerTick => m_serverSimulationSystemGroup.ServerTick;
         public bool HasServerWorld { get; private set; }
         public bool HasClientWorld { get; private set; }
+
+        private ClientSimulationSystemGroup m_clientSimulationSystemGroup;
+        private ServerSimulationSystemGroup m_serverSimulationSystemGroup;
 
         public void Initialize()
         {
@@ -48,11 +53,13 @@ namespace Plugins.ECSEntityBuilder.Worlds
             {
                 if (world.GetExistingSystem<ClientSimulationSystemGroup>() != null)
                 {
+                    m_clientSimulationSystemGroup = world.GetExistingSystem<ClientSimulationSystemGroup>();
                     Client = world;
                     HasClientWorld = true;
                 }
                 else if (world.GetExistingSystem<ServerSimulationSystemGroup>() != null)
                 {
+                    m_serverSimulationSystemGroup = world.GetExistingSystem<ServerSimulationSystemGroup>();
                     Server = world;
                     HasServerWorld = true;
                 }

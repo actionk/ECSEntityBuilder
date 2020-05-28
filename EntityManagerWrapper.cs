@@ -1,5 +1,6 @@
 using System;
 using Plugins.ECSEntityBuilder.Components;
+using Plugins.ECSEntityBuilder.Worlds;
 using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
@@ -21,6 +22,7 @@ namespace Plugins.ECSEntityBuilder
         public EntityManager EntityManager { get; }
         public EntityCommandBuffer.Concurrent EntityCommandBufferConcurrent { get; }
         public EntityCommandBuffer EntityCommandBuffer { get; }
+
         public int EntityCommandBufferJobIndex { get; }
 
         public override string ToString()
@@ -31,6 +33,19 @@ namespace Plugins.ECSEntityBuilder
         public static EntityManagerWrapper FromManager(EntityManager dstManager)
         {
             return new EntityManagerWrapper(dstManager);
+        }
+
+        public static EntityManagerWrapper FromWorld(WorldType entityWorldType)
+        {
+            switch (entityWorldType)
+            {
+                default:
+                    return new EntityManagerWrapper(World.DefaultGameObjectInjectionWorld.EntityManager);
+                case WorldType.CLIENT:
+                    return new EntityManagerWrapper(EntityWorldManager.Instance.Client.EntityManager);
+                case WorldType.SERVER:
+                    return new EntityManagerWrapper(EntityWorldManager.Instance.Server.EntityManager);
+            }
         }
 
         public EntityManagerWrapper(EntityManager entityManager)

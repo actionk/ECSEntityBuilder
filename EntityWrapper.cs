@@ -1,5 +1,6 @@
 using System;
 using Plugins.ECSEntityBuilder.Variables;
+using Plugins.ECSEntityBuilder.Worlds;
 using Unity.Entities;
 
 namespace Plugins.ECSEntityBuilder
@@ -62,6 +63,11 @@ namespace Plugins.ECSEntityBuilder
         public static EntityWrapper Wrap(Entity entity, EntityCommandBuffer.Concurrent entityCommandBuffer, int threadId)
         {
             return new EntityWrapper(entity, EntityManagerWrapper.FromJobCommandBuffer(entityCommandBuffer, threadId));
+        }
+
+        public static EntityWrapper Wrap(Entity entity, WorldType entityWorldType)
+        {
+            return new EntityWrapper(entity, EntityManagerWrapper.FromWorld(entityWorldType));
         }
 
         public EntityWrapper(Entity entity, EntityManagerWrapper entityManagerWrapper, EntityVariableMap variables)

@@ -310,5 +310,16 @@ namespace Plugins.ECSEntityBuilder
 
             throw new NotImplementedException();
         }
+
+        public bool RemoveComponent<T>(Entity entity) where T : struct, IComponentData
+        {
+            switch (Type)
+            {
+                case EntityManagerType.ENTITY_MANAGER:
+                    return EntityManager.RemoveComponent<T>(entity);
+            }
+
+            throw new NotImplementedException();
+        }
     }
 }

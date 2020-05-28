@@ -194,5 +194,10 @@ namespace Plugins.ECSEntityBuilder
         {
             return EntityManagerWrapper.HasComponent<T>(Entity);
         }
+
+        public bool RemoveComponent<T>() where T : struct, IComponentData
+        {
+            return EntityManagerWrapper.RemoveComponent<T>(Entity);
+        }
     }
 }

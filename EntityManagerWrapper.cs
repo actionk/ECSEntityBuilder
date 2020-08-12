@@ -20,7 +20,7 @@ namespace Plugins.ECSEntityBuilder
 
         public EntityManagerType Type { get; }
         public EntityManager EntityManager { get; }
-        public EntityCommandBuffer.Concurrent EntityCommandBufferConcurrent { get; }
+        public EntityCommandBuffer.ParallelWriter EntityCommandBufferConcurrent { get; }
         public EntityCommandBuffer EntityCommandBuffer { get; }
 
         public int EntityCommandBufferJobIndex { get; }
@@ -54,7 +54,7 @@ namespace Plugins.ECSEntityBuilder
             Type = EntityManagerType.ENTITY_MANAGER;
         }
 
-        public EntityManagerWrapper(EntityCommandBuffer.Concurrent entityCommandBufferConcurrent, int jobIndex)
+        public EntityManagerWrapper(EntityCommandBuffer.ParallelWriter entityCommandBufferConcurrent, int jobIndex)
         {
             EntityCommandBufferConcurrent = entityCommandBufferConcurrent;
             EntityCommandBufferJobIndex = jobIndex;
@@ -67,7 +67,7 @@ namespace Plugins.ECSEntityBuilder
             Type = EntityManagerType.ENTITY_COMMAND_BUFFER;
         }
 
-        public static EntityManagerWrapper FromJobCommandBuffer(EntityCommandBuffer.Concurrent commandBuffer, int jobIndex)
+        public static EntityManagerWrapper FromJobCommandBuffer(EntityCommandBuffer.ParallelWriter commandBuffer, int jobIndex)
         {
             return new EntityManagerWrapper(commandBuffer, jobIndex);
         }
@@ -104,10 +104,10 @@ namespace Plugins.ECSEntityBuilder
 #endif
                     return;
                 case EntityManagerType.ENTITY_COMMAND_BUFFER:
-                    EntityCommandBuffer.AddComponent(entity, new SetName {Value = new NativeString64(name)});
+                    EntityCommandBuffer.AddComponent(entity, new SetName {Value = new FixedString64(name)});
                     return;
                 case EntityManagerType.ENTITY_COMMAND_BUFFER_CONCURRENT:
-                    EntityCommandBufferConcurrent.AddComponent(EntityCommandBufferJobIndex, entity, new SetName {Value = new NativeString64(name)});
+                    EntityCommandBufferConcurrent.AddComponent(EntityCommandBufferJobIndex, entity, new SetName {Value = new FixedString64(name)});
                     return;
             }
 

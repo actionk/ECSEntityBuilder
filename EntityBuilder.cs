@@ -210,7 +210,7 @@ namespace Plugins.ECSEntityBuilder
             return Build(EntityManagerWrapper.FromCommandBuffer(entityCommandBuffer));
         }
 
-        public Entity Build(EntityCommandBuffer.Concurrent entityCommandBuffer, int threadId)
+        public Entity Build(EntityCommandBuffer.ParallelWriter entityCommandBuffer, int threadId)
         {
             return Build(EntityManagerWrapper.FromJobCommandBuffer(entityCommandBuffer, threadId));
         }

@@ -32,7 +32,7 @@ namespace Plugins.ECSEntityBuilder.Systems
 #pragma warning disable 618
         struct NewEntityJob : IJobForEachWithEntity<TSelector>
         {
-            public EntityCommandBuffer.Concurrent ConcurrentECB;
+            public EntityCommandBuffer.ParallelWriter ConcurrentECB;
 
             public void Execute(Entity entity, int jobIndex, [ReadOnly] ref TSelector component)
             {
@@ -43,7 +43,7 @@ namespace Plugins.ECSEntityBuilder.Systems
 
         struct CleanupEntityJob : IJobForEachWithEntity<TSystemState>
         {
-            public EntityCommandBuffer.Concurrent ConcurrentECB;
+            public EntityCommandBuffer.ParallelWriter ConcurrentECB;
 
             public void Execute(Entity entity, int jobIndex, [ReadOnly] ref TSystemState state)
             {
@@ -58,14 +58,14 @@ namespace Plugins.ECSEntityBuilder.Systems
         {
             var newEntityJob = new NewEntityJob
             {
-                ConcurrentECB = m_ecbSource.CreateCommandBuffer().ToConcurrent()
+                ConcurrentECB = m_ecbSource.CreateCommandBuffer().AsParallelWriter()
             };
             var newJobHandle = newEntityJob.ScheduleSingle(m_newEntities, inputDependencies);
             m_ecbSource.AddJobHandleForProducer(newJobHandle);
 
             var cleanupEntityJob = new CleanupEntityJob
             {
-                ConcurrentECB = m_ecbSource.CreateCommandBuffer().ToConcurrent()
+                ConcurrentECB = m_ecbSource.CreateCommandBuffer().AsParallelWriter()
             };
             var cleanupJobHandle = cleanupEntityJob.ScheduleSingle(m_destroyedEntities, newJobHandle);
             m_ecbSource.AddJobHandleForProducer(cleanupJobHandle);

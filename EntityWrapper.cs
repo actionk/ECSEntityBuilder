@@ -29,7 +29,7 @@ namespace Plugins.ECSEntityBuilder
             return new EntityWrapper(entityManagerWrapper.CreateEntity(), entityManagerWrapper);
         }
 
-        public static EntityWrapper CreateEntity(int threadId, EntityCommandBuffer.Concurrent entityCommandBuffer)
+        public static EntityWrapper CreateEntity(int threadId, EntityCommandBuffer.ParallelWriter entityCommandBuffer)
         {
             var entityManagerWrapper = EntityManagerWrapper.FromJobCommandBuffer(entityCommandBuffer, threadId);
             return new EntityWrapper(entityManagerWrapper.CreateEntity(), entityManagerWrapper);
@@ -60,7 +60,7 @@ namespace Plugins.ECSEntityBuilder
             return new EntityWrapper(entity, EntityManagerWrapper.FromCommandBuffer(entityCommandBuffer));
         }
 
-        public static EntityWrapper Wrap(Entity entity, EntityCommandBuffer.Concurrent entityCommandBuffer, int threadId)
+        public static EntityWrapper Wrap(Entity entity, EntityCommandBuffer.ParallelWriter entityCommandBuffer, int threadId)
         {
             return new EntityWrapper(entity, EntityManagerWrapper.FromJobCommandBuffer(entityCommandBuffer, threadId));
         }

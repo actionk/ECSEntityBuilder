@@ -2,6 +2,7 @@ using System;
 using Plugins.ECSEntityBuilder.Variables;
 using Plugins.ECSEntityBuilder.Worlds;
 using Unity.Entities;
+using UnityEngine;
 
 namespace Plugins.ECSEntityBuilder
 {
@@ -38,6 +39,24 @@ namespace Plugins.ECSEntityBuilder
         public static EntityWrapper CreateEntity(EntityManagerWrapper entityManagerWrapper)
         {
             return new EntityWrapper(entityManagerWrapper.CreateEntity(), entityManagerWrapper);
+        }
+
+        public static EntityWrapper Instantiate(Entity prefab, EntityManager entityManager)
+        {
+            var entityManagerWrapper = EntityManagerWrapper.FromManager(entityManager);
+            return new EntityWrapper(entityManagerWrapper.Instantiate(prefab), entityManagerWrapper);
+        }
+
+        public static EntityWrapper Instantiate(Entity prefab, EntityCommandBuffer entityCommandBuffer)
+        {
+            var entityManagerWrapper = EntityManagerWrapper.FromCommandBuffer(entityCommandBuffer);
+            return new EntityWrapper(entityManagerWrapper.Instantiate(prefab), entityManagerWrapper);
+        }
+
+        public static EntityWrapper Instantiate(Entity prefab, int threadId, EntityCommandBuffer.ParallelWriter entityCommandBuffer)
+        {
+            var entityManagerWrapper = EntityManagerWrapper.FromJobCommandBuffer(entityCommandBuffer, threadId);
+            return new EntityWrapper(entityManagerWrapper.Instantiate(prefab), entityManagerWrapper);
         }
 
         public static EntityWrapper Wrap(Entity entity)
@@ -198,6 +217,11 @@ namespace Plugins.ECSEntityBuilder
         public bool RemoveComponent<T>() where T : struct, IComponentData
         {
             return EntityManagerWrapper.RemoveComponent<T>(Entity);
+        }
+
+        public void AddComponentObject(Component componentObject)
+        {
+            EntityManagerWrapper.AddComponentObject(Entity, componentObject);
         }
     }
 }

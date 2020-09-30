@@ -308,7 +308,7 @@ namespace Plugins.ECSEntityBuilder
                     return;
             }
 
-            throw new NotImplementedException();
+            throw new NotImplementedException("Adding component object only possible using EntityManager, not buffer");
         }
 
         public bool RemoveComponent<T>(Entity entity) where T : struct, IComponentData

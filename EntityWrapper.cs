@@ -1,4 +1,5 @@
 using System;
+using Plugins.ECSEntityBuilder.Archetypes;
 using Plugins.ECSEntityBuilder.Variables;
 using Plugins.ECSEntityBuilder.Worlds;
 using Unity.Entities;
@@ -24,16 +25,34 @@ namespace Plugins.ECSEntityBuilder
             return new EntityWrapper(entityManagerWrapper.CreateEntity(), entityManagerWrapper);
         }
 
+        public static EntityWrapper CreateEntity<T>(EntityManager entityManager) where T : IArchetypeDescriptor
+        {
+            var entityManagerWrapper = EntityManagerWrapper.FromManager(entityManager);
+            return new EntityWrapper(entityManagerWrapper.CreateEntityFromArchetype<T>(), entityManagerWrapper);
+        }
+
         public static EntityWrapper CreateEntity(EntityCommandBuffer entityCommandBuffer)
         {
             var entityManagerWrapper = EntityManagerWrapper.FromCommandBuffer(entityCommandBuffer);
             return new EntityWrapper(entityManagerWrapper.CreateEntity(), entityManagerWrapper);
         }
 
+        public static EntityWrapper CreateEntity<T>(EntityCommandBuffer entityCommandBuffer) where T : IArchetypeDescriptor
+        {
+            var entityManagerWrapper = EntityManagerWrapper.FromCommandBuffer(entityCommandBuffer);
+            return new EntityWrapper(entityManagerWrapper.CreateEntityFromArchetype<T>(), entityManagerWrapper);
+        }
+
         public static EntityWrapper CreateEntity(int threadId, EntityCommandBuffer.ParallelWriter entityCommandBuffer)
         {
             var entityManagerWrapper = EntityManagerWrapper.FromJobCommandBuffer(entityCommandBuffer, threadId);
             return new EntityWrapper(entityManagerWrapper.CreateEntity(), entityManagerWrapper);
+        }
+
+        public static EntityWrapper CreateEntity<T>(int threadId, EntityCommandBuffer.ParallelWriter entityCommandBuffer) where T : IArchetypeDescriptor
+        {
+            var entityManagerWrapper = EntityManagerWrapper.FromJobCommandBuffer(entityCommandBuffer, threadId);
+            return new EntityWrapper(entityManagerWrapper.CreateEntityFromArchetype<T>(), entityManagerWrapper);
         }
 
         public static EntityWrapper CreateEntity(EntityManagerWrapper entityManagerWrapper)

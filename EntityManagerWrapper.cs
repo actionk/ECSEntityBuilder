@@ -1,4 +1,5 @@
 using System;
+using Plugins.ECSEntityBuilder.Archetypes;
 using Plugins.ECSEntityBuilder.Components;
 using Plugins.ECSEntityBuilder.Worlds;
 using Unity.Collections;
@@ -317,6 +318,23 @@ namespace Plugins.ECSEntityBuilder
             {
                 case EntityManagerType.ENTITY_MANAGER:
                     return EntityManager.RemoveComponent<T>(entity);
+            }
+
+            throw new NotImplementedException();
+        }
+
+        public Entity CreateEntityFromArchetype<T>() where T : IArchetypeDescriptor
+        {
+            var archetype = EntityArchetypeManager.Instance.GetOrCreateArchetype<T>();
+
+            switch (Type)
+            {
+                case EntityManagerType.ENTITY_MANAGER:
+                    return EntityManager.CreateEntity(archetype);
+                case EntityManagerType.ENTITY_COMMAND_BUFFER:
+                    return EntityCommandBuffer.CreateEntity(archetype);
+                case EntityManagerType.ENTITY_COMMAND_BUFFER_CONCURRENT:
+                    return EntityCommandBufferConcurrent.CreateEntity(EntityCommandBufferJobIndex, archetype);
             }
 
             throw new NotImplementedException();

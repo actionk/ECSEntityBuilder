@@ -268,6 +268,22 @@ public override void OnBuild(EntityManagerWrapper wrapper, Entity dataEntity)
 }
 ```
 
+### Mapping GameObjects with the built entity
+
+You can create a game object inside a builder and link it with the created entity without using `ConvertToEntity` component.
+
+```
+protected override void OnPreBuild(EntityManagerWrapper wrapper)
+{
+    base.OnPreBuild(wrapper);
+
+    var prefab = ResourceProvider.GetPrefab("Items/Item");
+    var gameObject = GameObjectEntityManager.Instance.CreateFromPrefab(prefab);
+
+    AddComponentData(new ManagedGameObject {instanceId = gameObject.GetInstanceID()});
+}
+```
+
 ### Variables
 
 When extending the `EntityWrapper` you might want to save some data in the wrapper to reuse it in your extensions. For example, when setting the 2D position, you might want to save ZIndex to be used for this exact entity.

@@ -8,34 +8,6 @@ namespace Plugins.ECSEntityBuilder.Worlds
 {
     public class EntityWorldManager
     {
-        #region Singleton
-
-        private static EntityWorldManager INSTANCE = new EntityWorldManager();
-
-        static EntityWorldManager()
-        {
-        }
-
-        private EntityWorldManager()
-        {
-        }
-
-        public static EntityWorldManager Instance
-        {
-            get { return INSTANCE; }
-        }
-
-#if UNITY_EDITOR
-        // for quick play mode entering 
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        public static void Reset()
-        {
-            INSTANCE = new EntityWorldManager();
-        }
-#endif
-
-        #endregion
-
         public World Default { get; private set; }
         public World Client { get; private set; }
         public uint ClientTick => m_clientSimulationSystemGroup.ServerTick;
@@ -80,5 +52,33 @@ namespace Plugins.ECSEntityBuilder.Worlds
 
             throw new NotImplementedException();
         }
+
+        #region Singleton
+
+        private static EntityWorldManager INSTANCE = new EntityWorldManager();
+
+        static EntityWorldManager()
+        {
+        }
+
+        private EntityWorldManager()
+        {
+        }
+
+        public static EntityWorldManager Instance
+        {
+            get { return INSTANCE; }
+        }
+
+#if UNITY_EDITOR
+        // for quick play mode entering 
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        public static void Reset()
+        {
+            INSTANCE = new EntityWorldManager();
+        }
+#endif
+
+        #endregion
     }
 }

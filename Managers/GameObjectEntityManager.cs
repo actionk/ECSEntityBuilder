@@ -38,7 +38,7 @@ namespace Plugins.ECSEntityBuilder.Managers
             Object.Destroy(gameObject);
         }
 
-        #region Singleton
+#region Singleton
 
         private static GameObjectEntityManager INSTANCE = new GameObjectEntityManager();
 
@@ -55,6 +55,11 @@ namespace Plugins.ECSEntityBuilder.Managers
             get { return INSTANCE; }
         }
 
+        public void Remove(GameObject gameObject)
+        {
+            m_instances.Remove(gameObject.GetInstanceID());
+        }
+
 #if UNITY_EDITOR
         // for quick play mode entering 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
@@ -64,6 +69,6 @@ namespace Plugins.ECSEntityBuilder.Managers
         }
 #endif
 
-        #endregion
+#endregion
     }
 }

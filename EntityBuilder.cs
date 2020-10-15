@@ -178,6 +178,14 @@ namespace Plugins.ECSEntityBuilder
             return (TChild) this;
         }
 
+        public TChild AddElementsToBuffer<T>(params T[] elements) where T : struct, IBufferElementData
+        {
+            foreach(var element in elements)
+                GetOrCreateGenericStep<AddBufferStep<T>, T>().Add(element);
+            
+            return (TChild) this;
+        }
+
         public TChild SetParent(Entity entity)
         {
             GetOrCreateStep<SetParentStep>().SetValue(entity);

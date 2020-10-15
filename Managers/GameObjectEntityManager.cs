@@ -7,13 +7,10 @@ namespace Plugins.ECSEntityBuilder.Managers
     {
         private readonly Dictionary<int, GameObject> m_instances = new Dictionary<int, GameObject>();
 
-        public GameObject this[int index]
+        public GameObject GetByInstanceID(int instanceId)
         {
-            get
-            {
-                GameObject value;
-                return m_instances.TryGetValue(index, out value) ? value : null;
-            }
+            GameObject value;
+            return m_instances.TryGetValue(instanceId, out value) ? value : null;
         }
 
         public GameObject CreateFromPrefab(GameObject prefab, bool enableImmediately = false)

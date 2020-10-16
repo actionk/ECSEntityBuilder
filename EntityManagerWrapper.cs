@@ -16,7 +16,8 @@ namespace Plugins.ECSEntityBuilder
         {
             ENTITY_MANAGER,
             ENTITY_COMMAND_BUFFER,
-            ENTITY_COMMAND_BUFFER_CONCURRENT
+            ENTITY_COMMAND_BUFFER_CONCURRENT,
+            ENTITY_MANAGER_AND_COMMAND_BUFFER
         }
 
         public EntityManagerType Type { get; }
@@ -34,6 +35,11 @@ namespace Plugins.ECSEntityBuilder
         public static EntityManagerWrapper FromManager(EntityManager dstManager)
         {
             return new EntityManagerWrapper(dstManager);
+        }
+
+        public static EntityManagerWrapper FromManagerAndBuffer(EntityManager dstManager, EntityCommandBuffer entityCommandBuffer)
+        {
+            return new EntityManagerWrapper(dstManager, entityCommandBuffer);
         }
 
         public static EntityManagerWrapper FromWorld(WorldType entityWorldType)
@@ -55,6 +61,13 @@ namespace Plugins.ECSEntityBuilder
             Type = EntityManagerType.ENTITY_MANAGER;
         }
 
+        public EntityManagerWrapper(EntityManager entityManager, EntityCommandBuffer entityCommandBuffer)
+        {
+            EntityManager = entityManager;
+            EntityCommandBuffer = entityCommandBuffer;
+            Type = EntityManagerType.ENTITY_MANAGER_AND_COMMAND_BUFFER;
+        }
+
         public EntityManagerWrapper(EntityCommandBuffer.ParallelWriter entityCommandBufferConcurrent, int jobIndex)
         {
             EntityCommandBufferConcurrent = entityCommandBufferConcurrent;
@@ -62,9 +75,9 @@ namespace Plugins.ECSEntityBuilder
             Type = EntityManagerType.ENTITY_COMMAND_BUFFER_CONCURRENT;
         }
 
-        public EntityManagerWrapper(EntityCommandBuffer entityCommandBufferConcurrent)
+        public EntityManagerWrapper(EntityCommandBuffer entityCommandBuffer)
         {
-            EntityCommandBuffer = entityCommandBufferConcurrent;
+            EntityCommandBuffer = entityCommandBuffer;
             Type = EntityManagerType.ENTITY_COMMAND_BUFFER;
         }
 
@@ -85,6 +98,7 @@ namespace Plugins.ECSEntityBuilder
                 case EntityManagerType.ENTITY_MANAGER:
                     return EntityManager.CreateEntity();
                 case EntityManagerType.ENTITY_COMMAND_BUFFER:
+                case EntityManagerType.ENTITY_MANAGER_AND_COMMAND_BUFFER:
                     return EntityCommandBuffer.CreateEntity();
                 case EntityManagerType.ENTITY_COMMAND_BUFFER_CONCURRENT:
                     return EntityCommandBufferConcurrent.CreateEntity(EntityCommandBufferJobIndex);
@@ -105,6 +119,7 @@ namespace Plugins.ECSEntityBuilder
 #endif
                     return;
                 case EntityManagerType.ENTITY_COMMAND_BUFFER:
+                case EntityManagerType.ENTITY_MANAGER_AND_COMMAND_BUFFER:
                     EntityCommandBuffer.AddComponent(entity, new SetName {Value = new FixedString64(name)});
                     return;
                 case EntityManagerType.ENTITY_COMMAND_BUFFER_CONCURRENT:
@@ -122,6 +137,7 @@ namespace Plugins.ECSEntityBuilder
                 case EntityManagerType.ENTITY_MANAGER:
                     return EntityManager.CreateEntity(entityArchetype);
                 case EntityManagerType.ENTITY_COMMAND_BUFFER:
+                case EntityManagerType.ENTITY_MANAGER_AND_COMMAND_BUFFER:
                     return EntityCommandBuffer.CreateEntity(entityArchetype);
                 case EntityManagerType.ENTITY_COMMAND_BUFFER_CONCURRENT:
                     return EntityCommandBufferConcurrent.CreateEntity(EntityCommandBufferJobIndex, entityArchetype);
@@ -138,6 +154,7 @@ namespace Plugins.ECSEntityBuilder
                     EntityManager.AddComponentData(entity, component);
                     return;
                 case EntityManagerType.ENTITY_COMMAND_BUFFER:
+                case EntityManagerType.ENTITY_MANAGER_AND_COMMAND_BUFFER:
                     EntityCommandBuffer.AddComponent(entity, component);
                     return;
                 case EntityManagerType.ENTITY_COMMAND_BUFFER_CONCURRENT:
@@ -156,6 +173,7 @@ namespace Plugins.ECSEntityBuilder
                     EntityManager.AddComponent<T>(entity);
                     return;
                 case EntityManagerType.ENTITY_COMMAND_BUFFER:
+                case EntityManagerType.ENTITY_MANAGER_AND_COMMAND_BUFFER:
                     EntityCommandBuffer.AddComponent<T>(entity);
                     return;
                 case EntityManagerType.ENTITY_COMMAND_BUFFER_CONCURRENT:
@@ -174,6 +192,7 @@ namespace Plugins.ECSEntityBuilder
                     EntityManager.SetComponentData(entity, component);
                     return;
                 case EntityManagerType.ENTITY_COMMAND_BUFFER:
+                case EntityManagerType.ENTITY_MANAGER_AND_COMMAND_BUFFER:
                     EntityCommandBuffer.SetComponent(entity, component);
                     return;
                 case EntityManagerType.ENTITY_COMMAND_BUFFER_CONCURRENT:
@@ -192,6 +211,7 @@ namespace Plugins.ECSEntityBuilder
                     EntityManager.AddSharedComponentData(entity, component);
                     return;
                 case EntityManagerType.ENTITY_COMMAND_BUFFER:
+                case EntityManagerType.ENTITY_MANAGER_AND_COMMAND_BUFFER:
                     EntityCommandBuffer.AddSharedComponent(entity, component);
                     return;
                 case EntityManagerType.ENTITY_COMMAND_BUFFER_CONCURRENT:
@@ -209,6 +229,7 @@ namespace Plugins.ECSEntityBuilder
                 case EntityManagerType.ENTITY_MANAGER:
                     return EntityManager.AddBuffer<T>(entity);
                 case EntityManagerType.ENTITY_COMMAND_BUFFER:
+                case EntityManagerType.ENTITY_MANAGER_AND_COMMAND_BUFFER:
                     return EntityCommandBuffer.AddBuffer<T>(entity);
                 case EntityManagerType.ENTITY_COMMAND_BUFFER_CONCURRENT:
                     return EntityCommandBufferConcurrent.AddBuffer<T>(EntityCommandBufferJobIndex, entity);
@@ -222,16 +243,11 @@ namespace Plugins.ECSEntityBuilder
             switch (Type)
             {
                 case EntityManagerType.ENTITY_MANAGER:
+                case EntityManagerType.ENTITY_MANAGER_AND_COMMAND_BUFFER:
                     return EntityManager.GetBuffer<T>(entity);
             }
 
             throw new NotImplementedException();
-        }
-
-        public DynamicBuffer<T> GetOrCreateBuffer<T>(Entity entity) where T : struct, IBufferElementData
-        {
-            var isBufferExists = HasComponent<T>(entity);
-            return isBufferExists ? GetBuffer<T>(entity) : AddBuffer<T>(entity);
         }
 
         public bool HasComponent<T>(Entity entity) where T : struct
@@ -239,6 +255,7 @@ namespace Plugins.ECSEntityBuilder
             switch (Type)
             {
                 case EntityManagerType.ENTITY_MANAGER:
+                case EntityManagerType.ENTITY_MANAGER_AND_COMMAND_BUFFER:
                     return EntityManager.HasComponent<T>(entity);
             }
 
@@ -250,6 +267,7 @@ namespace Plugins.ECSEntityBuilder
             switch (Type)
             {
                 case EntityManagerType.ENTITY_MANAGER:
+                case EntityManagerType.ENTITY_MANAGER_AND_COMMAND_BUFFER:
                     return EntityManager.CreateArchetype(components);
             }
 
@@ -265,6 +283,7 @@ namespace Plugins.ECSEntityBuilder
                     return;
 
                 case EntityManagerType.ENTITY_COMMAND_BUFFER:
+                case EntityManagerType.ENTITY_MANAGER_AND_COMMAND_BUFFER:
                     EntityCommandBuffer.DestroyEntity(entity);
                     return;
 
@@ -281,6 +300,7 @@ namespace Plugins.ECSEntityBuilder
                 case EntityManagerType.ENTITY_MANAGER:
                     return EntityManager.Instantiate(prefabEntity);
                 case EntityManagerType.ENTITY_COMMAND_BUFFER:
+                case EntityManagerType.ENTITY_MANAGER_AND_COMMAND_BUFFER:
                     return EntityCommandBuffer.Instantiate(prefabEntity);
                 case EntityManagerType.ENTITY_COMMAND_BUFFER_CONCURRENT:
                     return EntityCommandBufferConcurrent.Instantiate(EntityCommandBufferJobIndex, prefabEntity);
@@ -294,6 +314,7 @@ namespace Plugins.ECSEntityBuilder
             switch (Type)
             {
                 case EntityManagerType.ENTITY_MANAGER:
+                case EntityManagerType.ENTITY_MANAGER_AND_COMMAND_BUFFER:
                     return EntityManager.GetComponentData<T>(entity);
             }
 
@@ -305,6 +326,7 @@ namespace Plugins.ECSEntityBuilder
             switch (Type)
             {
                 case EntityManagerType.ENTITY_MANAGER:
+                case EntityManagerType.ENTITY_MANAGER_AND_COMMAND_BUFFER:
                     EntityManager.AddComponentObject(entity, componentObject);
                     return;
             }
@@ -318,6 +340,15 @@ namespace Plugins.ECSEntityBuilder
             {
                 case EntityManagerType.ENTITY_MANAGER:
                     return EntityManager.RemoveComponent<T>(entity);
+
+                case EntityManagerType.ENTITY_COMMAND_BUFFER:
+                case EntityManagerType.ENTITY_MANAGER_AND_COMMAND_BUFFER:
+                    EntityCommandBuffer.RemoveComponent<T>(entity);
+                    return true;
+
+                case EntityManagerType.ENTITY_COMMAND_BUFFER_CONCURRENT:
+                    EntityCommandBufferConcurrent.RemoveComponent<T>(EntityCommandBufferJobIndex, entity);
+                    return true;
             }
 
             throw new NotImplementedException();
@@ -332,6 +363,7 @@ namespace Plugins.ECSEntityBuilder
                 case EntityManagerType.ENTITY_MANAGER:
                     return EntityManager.CreateEntity(archetype);
                 case EntityManagerType.ENTITY_COMMAND_BUFFER:
+                case EntityManagerType.ENTITY_MANAGER_AND_COMMAND_BUFFER:
                     return EntityCommandBuffer.CreateEntity(archetype);
                 case EntityManagerType.ENTITY_COMMAND_BUFFER_CONCURRENT:
                     return EntityCommandBufferConcurrent.CreateEntity(EntityCommandBufferJobIndex, archetype);

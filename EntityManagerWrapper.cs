@@ -37,9 +37,24 @@ namespace Plugins.ECSEntityBuilder
             return new EntityManagerWrapper(dstManager);
         }
 
+        public static EntityManagerWrapper From(EntityManager dstManager)
+        {
+            return new EntityManagerWrapper(dstManager);
+        }
+
         public static EntityManagerWrapper FromManagerAndBuffer(EntityManager dstManager, EntityCommandBuffer entityCommandBuffer)
         {
             return new EntityManagerWrapper(dstManager, entityCommandBuffer);
+        }
+
+        public static EntityManagerWrapper From(EntityManager dstManager, EntityCommandBuffer entityCommandBuffer)
+        {
+            return new EntityManagerWrapper(dstManager, entityCommandBuffer);
+        }
+
+        public static EntityManagerWrapper From(ComponentSystem componentSystem)
+        {
+            return new EntityManagerWrapper(componentSystem.EntityManager, componentSystem.PostUpdateCommands);
         }
 
         public static EntityManagerWrapper FromWorld(WorldType entityWorldType)

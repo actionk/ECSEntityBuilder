@@ -14,17 +14,17 @@ namespace Plugins.ECSEntityBuilder
 {
     public abstract class EntityBuilder<TChild> where TChild : EntityBuilder<TChild>
     {
-        public delegate void OnPreBuildHandler();
+        public delegate void OnPreBuildDelegate();
 
-        public delegate void OnPostBuildHandler(EntityWrapper entityWrapper);
+        public delegate void OnPostBuildDelegate(EntityWrapper entityWrapper);
 
         protected bool m_built;
         protected IEntityCreationStrategy m_creationStrategy = CreateEmptyStrategy.DEFAULT;
         protected EntityVariableMap m_variables;
         protected readonly LinkedList<IEntityBuilderStep> m_steps = new LinkedList<IEntityBuilderStep>();
 
-        protected event OnPreBuildHandler preBuild;
-        protected event OnPostBuildHandler postBuild;
+        public event OnPreBuildDelegate OnPreBuildHandler;
+        public event OnPostBuildDelegate OnPostBuildHandler;
 
         ~EntityBuilder()
         {
@@ -180,9 +180,9 @@ namespace Plugins.ECSEntityBuilder
 
         public TChild AddElementsToBuffer<T>(params T[] elements) where T : struct, IBufferElementData
         {
-            foreach(var element in elements)
+            foreach (var element in elements)
                 GetOrCreateGenericStep<AddBufferStep<T>, T>().Add(element);
-            
+
             return (TChild) this;
         }
 
@@ -228,25 +228,19 @@ namespace Plugins.ECSEntityBuilder
             m_built = true;
             var entity = m_creationStrategy.Create(wrapper, m_variables);
 
-            preBuild?.Invoke();
+            OnPreBuildHandler?.Invoke();
 
             OnPreBuild(wrapper);
 
             foreach (var step in m_steps)
                 step.Process(wrapper, m_variables, entity);
 
-            OnPostBuild(wrapper, entity);
-
-            postBuild?.Invoke(EntityWrapper.Wrap(entity, wrapper));
+            OnPostBuildHandler?.Invoke(EntityWrapper.Wrap(entity, wrapper));
 
             return entity;
         }
 
         protected virtual void OnPreBuild(EntityManagerWrapper wrapper)
-        {
-        }
-
-        protected virtual void OnPostBuild(EntityManagerWrapper wrapper, Entity entity)
         {
         }
 

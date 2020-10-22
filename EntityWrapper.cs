@@ -78,9 +78,9 @@ namespace Plugins.ECSEntityBuilder
             return new EntityWrapper(entityManagerWrapper.Instantiate(prefab), entityManagerWrapper);
         }
 
-        public static EntityWrapper Wrap(Entity entity)
+        public static EntityWrapper Wrap(Entity entity, ComponentSystem componentSystem)
         {
-            return new EntityWrapper(entity);
+            return new EntityWrapper(entity, EntityManagerWrapper.From(componentSystem));
         }
 
         public static EntityWrapper Wrap(Entity entity, EntityManagerWrapper entityManagerWrapper)

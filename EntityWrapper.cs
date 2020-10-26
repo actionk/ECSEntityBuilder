@@ -221,6 +221,11 @@ namespace Plugins.ECSEntityBuilder
             return EntityManagerWrapper.GetComponentData<T>(Entity);
         }
 
+        public T GetComponentDataOrDefault<T>() where T : struct, IComponentData
+        {
+            return EntityManagerWrapper.HasComponent<T>(Entity) ? EntityManagerWrapper.GetComponentData<T>(Entity) : default(T);
+        }
+
         public bool HasComponent<T>() where T : struct, IComponentData
         {
             return EntityManagerWrapper.HasComponent<T>(Entity);

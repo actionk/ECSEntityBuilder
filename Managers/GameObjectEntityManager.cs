@@ -5,6 +5,8 @@ namespace Plugins.ECSEntityBuilder.Managers
 {
     public class GameObjectEntityManager
     {
+        public Transform DefaultParentTransform { get; set; }
+
         private readonly Dictionary<int, GameObject> m_instances = new Dictionary<int, GameObject>();
 
         public GameObject GetByInstanceID(int instanceId)
@@ -15,7 +17,7 @@ namespace Plugins.ECSEntityBuilder.Managers
 
         public GameObject CreateFromPrefab(GameObject prefab, bool enableImmediately = false)
         {
-            var gameObject = Object.Instantiate(prefab);
+            var gameObject = Object.Instantiate(prefab, DefaultParentTransform);
             if (!enableImmediately)
                 gameObject.SetActive(false);
 

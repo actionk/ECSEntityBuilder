@@ -1,4 +1,4 @@
-namespace Plugins.ECSEntityBuilder.Variables
+namespace Plugins.Shared.ECSEntityBuilder.Variables
 {
     public interface IEntityVariable
     {

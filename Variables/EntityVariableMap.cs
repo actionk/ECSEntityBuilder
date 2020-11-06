@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Plugins.ECSEntityBuilder.Variables
+namespace Plugins.Shared.ECSEntityBuilder.Variables
 {
     public class EntityVariableMap
     {

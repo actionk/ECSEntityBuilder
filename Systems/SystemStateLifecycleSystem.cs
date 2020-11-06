@@ -2,7 +2,7 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Jobs;
 
-namespace Plugins.ECSEntityBuilder.Systems
+namespace Plugins.Shared.ECSEntityBuilder.Systems
 {
     public abstract class SystemStateLifecycleSystem<TSelector, TSystemState> : JobComponentSystem
         where TSelector : struct, IComponentData

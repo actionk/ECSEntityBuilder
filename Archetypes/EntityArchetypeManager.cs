@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Plugins.ECSEntityBuilder.Worlds;
+using Plugins.Shared.ECSEntityBuilder.Worlds;
 using Unity.Entities;
 using UnityEngine;
 
-namespace Plugins.ECSEntityBuilder.Archetypes
+namespace Plugins.Shared.ECSEntityBuilder.Archetypes
 {
     public class EntityArchetypeManager
     {

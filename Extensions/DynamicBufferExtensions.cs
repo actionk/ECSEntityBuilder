@@ -1,7 +1,7 @@
 ﻿using System;
 using Unity.Entities;
 
-namespace Plugins.ECSEntityBuilder.Extensions
+namespace Plugins.Shared.ECSEntityBuilder.Extensions
 {
     public static class DynamicBufferExtensions
     {

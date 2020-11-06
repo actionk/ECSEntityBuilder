@@ -1,6 +1,6 @@
 using Unity.Entities;
 
-namespace Plugins.ECSEntityBuilder.Components
+namespace Plugins.Shared.ECSEntityBuilder.Components
 {
     public struct HasName : IComponentData
     {

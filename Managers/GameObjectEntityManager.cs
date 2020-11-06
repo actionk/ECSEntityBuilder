@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace Plugins.ECSEntityBuilder.Managers
+namespace Plugins.Shared.ECSEntityBuilder.Managers
 {
     public class GameObjectEntityManager
     {

@@ -1,8 +1,8 @@
-using Plugins.ECSEntityBuilder.Variables;
+using Plugins.Shared.ECSEntityBuilder.Variables;
 using Unity.Entities;
 using UnityEngine;
 
-namespace Plugins.ECSEntityBuilder.Steps
+namespace Plugins.Shared.ECSEntityBuilder.Steps
 {
     public class AddComponentObjectStep<T> : IEntityBuilderGenericStep<T> where T : Component
     {

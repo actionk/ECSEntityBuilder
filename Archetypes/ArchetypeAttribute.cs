@@ -1,7 +1,7 @@
 using System;
-using Plugins.ECSEntityBuilder.Worlds;
+using Plugins.Shared.ECSEntityBuilder.Worlds;
 
-namespace Plugins.ECSEntityBuilder.Archetypes
+namespace Plugins.Shared.ECSEntityBuilder.Archetypes
 {
     [AttributeUsage(AttributeTargets.Class)]
     public class ArchetypeAttribute : Attribute

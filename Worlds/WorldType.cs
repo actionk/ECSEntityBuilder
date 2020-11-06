@@ -1,4 +1,4 @@
-namespace Plugins.ECSEntityBuilder.Worlds
+namespace Plugins.Shared.ECSEntityBuilder.Worlds
 {
     public enum WorldType
     {

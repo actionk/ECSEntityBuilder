@@ -1,12 +1,12 @@
 using System;
-using Plugins.ECSEntityBuilder.Archetypes;
-using Plugins.ECSEntityBuilder.Components;
-using Plugins.ECSEntityBuilder.Worlds;
+using Plugins.Shared.ECSEntityBuilder.Archetypes;
+using Plugins.Shared.ECSEntityBuilder.Components;
+using Plugins.Shared.ECSEntityBuilder.Worlds;
 using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
 
-namespace Plugins.ECSEntityBuilder
+namespace Plugins.Shared.ECSEntityBuilder
 {
     public class EntityManagerWrapper
     {

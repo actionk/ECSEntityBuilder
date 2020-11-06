@@ -1,7 +1,7 @@
-using Plugins.ECSEntityBuilder.Components;
+using Plugins.Shared.ECSEntityBuilder.Components;
 using Unity.Entities;
 
-namespace Plugins.ECSEntityBuilder.Systems
+namespace Plugins.Shared.ECSEntityBuilder.Systems
 {
     [UpdateInGroup(typeof(InitializationSystemGroup))]
     public class SetNameSystem : ComponentSystem

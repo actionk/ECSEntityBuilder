@@ -1,9 +1,9 @@
-using Plugins.ECSEntityBuilder.Variables;
+using Plugins.Shared.ECSEntityBuilder.Variables;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 
-namespace Plugins.ECSEntityBuilder.Steps
+namespace Plugins.Shared.ECSEntityBuilder.Steps
 {
     public class SetRotationStep : IEntityBuilderStep
     {

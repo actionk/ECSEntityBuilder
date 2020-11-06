@@ -1,7 +1,7 @@
-using Plugins.ECSEntityBuilder.Variables;
+using Plugins.Shared.ECSEntityBuilder.Variables;
 using Unity.Entities;
 
-namespace Plugins.ECSEntityBuilder.InstantiationStrategy
+namespace Plugins.Shared.ECSEntityBuilder.InstantiationStrategy
 {
     public class CreateEmptyStrategy : IEntityCreationStrategy
     {

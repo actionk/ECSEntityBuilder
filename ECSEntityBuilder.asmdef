@@ -7,6 +7,7 @@
         "GUID:a5baed0c9693541a5bd947d336ec7659",
         "GUID:e0cd26848372d4e5c891c569017e11f1"
     ],
+    "rootNamespace": "Plugins.ECSPowerNetcode",
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

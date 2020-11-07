@@ -1,6 +1,6 @@
 using Unity.Entities;
 
-namespace Plugins.Shared.ECSEntityBuilder.Archetypes
+namespace Plugins.ECSEntityBuilder.Archetypes
 {
     public interface IClientServerArchetypeDescriptor : IArchetypeDescriptor
     {

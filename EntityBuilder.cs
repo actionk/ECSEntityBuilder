@@ -1,15 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Plugins.Shared.ECSEntityBuilder.Archetypes;
-using Plugins.Shared.ECSEntityBuilder.InstantiationStrategy;
-using Plugins.Shared.ECSEntityBuilder.Steps;
-using Plugins.Shared.ECSEntityBuilder.Variables;
+using Plugins.ECSEntityBuilder.Archetypes;
+using Plugins.ECSEntityBuilder.InstantiationStrategy;
+using Plugins.ECSEntityBuilder.Steps;
+using Plugins.ECSEntityBuilder.Variables;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Plugins.Shared.ECSEntityBuilder
+namespace Plugins.ECSEntityBuilder
 {
     public abstract class EntityBuilder
     {

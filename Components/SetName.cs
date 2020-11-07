@@ -1,7 +1,7 @@
 using Unity.Collections;
 using Unity.Entities;
 
-namespace Plugins.Shared.ECSEntityBuilder.Components
+namespace Plugins.ECSEntityBuilder.Components
 {
     public struct SetName : IComponentData
     {

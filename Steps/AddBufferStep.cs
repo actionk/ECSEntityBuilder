@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using Plugins.Shared.ECSEntityBuilder.Variables;
+using Plugins.ECSEntityBuilder.Variables;
 using Unity.Entities;
 
-namespace Plugins.Shared.ECSEntityBuilder.Steps
+namespace Plugins.ECSEntityBuilder.Steps
 {
     public class AddBufferStep<T> : IEntityBuilderGenericStep<T> where T : struct, IBufferElementData
     {

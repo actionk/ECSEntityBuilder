@@ -1,7 +1,7 @@
-using Plugins.Shared.ECSEntityBuilder.Variables;
+using Plugins.ECSEntityBuilder.Variables;
 using Unity.Entities;
 
-namespace Plugins.Shared.ECSEntityBuilder.InstantiationStrategy
+namespace Plugins.ECSEntityBuilder.InstantiationStrategy
 {
     public class CreateFromPrefabStrategy : IEntityCreationStrategy
     {

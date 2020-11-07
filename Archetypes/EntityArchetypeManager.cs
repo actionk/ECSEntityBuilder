@@ -5,7 +5,7 @@ using System.Reflection;
 using Unity.Entities;
 using UnityEngine;
 
-namespace Plugins.Shared.ECSEntityBuilder.Archetypes
+namespace Plugins.ECSEntityBuilder.Archetypes
 {
     public class EntityArchetypeManager
     {

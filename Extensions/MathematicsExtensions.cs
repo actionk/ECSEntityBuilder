@@ -1,6 +1,6 @@
 ﻿using Unity.Mathematics;
 
-namespace Plugins.Shared.ECSEntityBuilder.Extensions
+namespace Plugins.ECSEntityBuilder.Extensions
 {
     public static class MathematicsExtensions
     {

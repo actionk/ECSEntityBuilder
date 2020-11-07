@@ -1,7 +1,7 @@
 ﻿using System;
 using Unity.Collections;
 
-namespace Plugins.Shared.ECSEntityBuilder.Extensions
+namespace Plugins.ECSEntityBuilder.Extensions
 {
     public static class NativeCollectionsExtensions
     {

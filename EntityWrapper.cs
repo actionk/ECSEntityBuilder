@@ -1,10 +1,10 @@
 using System;
-using Plugins.Shared.ECSEntityBuilder.Archetypes;
-using Plugins.Shared.ECSEntityBuilder.Variables;
+using Plugins.ECSEntityBuilder.Archetypes;
+using Plugins.ECSEntityBuilder.Variables;
 using Unity.Entities;
 using UnityEngine;
 
-namespace Plugins.Shared.ECSEntityBuilder
+namespace Plugins.ECSEntityBuilder
 {
     public class EntityWrapper
     {

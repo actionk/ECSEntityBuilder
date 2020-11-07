@@ -1,8 +1,8 @@
-using Plugins.Shared.ECSEntityBuilder.Archetypes;
-using Plugins.Shared.ECSEntityBuilder.Variables;
+using Plugins.ECSEntityBuilder.Archetypes;
+using Plugins.ECSEntityBuilder.Variables;
 using Unity.Entities;
 
-namespace Plugins.Shared.ECSEntityBuilder.InstantiationStrategy
+namespace Plugins.ECSEntityBuilder.InstantiationStrategy
 {
     public class CreateFromArchetypeStrategy<T> : IEntityCreationStrategy where T : IArchetypeDescriptor
     {

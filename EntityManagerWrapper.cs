@@ -1,7 +1,6 @@
 using System;
 using Plugins.Shared.ECSEntityBuilder.Archetypes;
 using Plugins.Shared.ECSEntityBuilder.Components;
-using Plugins.Shared.ECSEntityBuilder.Worlds;
 using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
@@ -55,19 +54,6 @@ namespace Plugins.Shared.ECSEntityBuilder
         public static EntityManagerWrapper From(ComponentSystem componentSystem)
         {
             return new EntityManagerWrapper(componentSystem.EntityManager, componentSystem.PostUpdateCommands);
-        }
-
-        public static EntityManagerWrapper FromWorld(WorldType entityWorldType)
-        {
-            switch (entityWorldType)
-            {
-                default:
-                    return new EntityManagerWrapper(World.DefaultGameObjectInjectionWorld.EntityManager);
-                case WorldType.CLIENT:
-                    return new EntityManagerWrapper(EntityWorldManager.Instance.Client.EntityManager);
-                case WorldType.SERVER:
-                    return new EntityManagerWrapper(EntityWorldManager.Instance.Server.EntityManager);
-            }
         }
 
         public EntityManagerWrapper(EntityManager entityManager)

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Plugins.Shared.ECSEntityBuilder.Worlds;
 using Unity.Entities;
 using UnityEngine;
 
@@ -10,7 +9,7 @@ namespace Plugins.Shared.ECSEntityBuilder.Archetypes
 {
     public class EntityArchetypeManager
     {
-        #region Singleton
+#region Singleton
 
         private static EntityArchetypeManager INSTANCE = new EntityArchetypeManager();
 
@@ -36,17 +35,9 @@ namespace Plugins.Shared.ECSEntityBuilder.Archetypes
         }
 #endif
 
-        #endregion
+#endregion
 
-        private struct EntityArchetypeHolder
-        {
-            public EntityArchetype defaultArchetype;
-            public EntityArchetype clientArchetype;
-            public EntityArchetype serverArchetype;
-        }
-
-        private readonly Dictionary<Type, EntityArchetypeHolder> m_archetypes = new Dictionary<Type, EntityArchetypeHolder>();
-
+        private readonly Dictionary<Type, EntityArchetype> m_archetypes = new Dictionary<Type, EntityArchetype>();
 
         public void InitializeArchetypes(Assembly assembly)
         {
@@ -65,32 +56,16 @@ namespace Plugins.Shared.ECSEntityBuilder.Archetypes
 
         public EntityArchetype GetOrCreateArchetype<T>() where T : IArchetypeDescriptor
         {
-            return GetOrCreateArchetype<T>(WorldType.DEFAULT);
-        }
-
-        public EntityArchetype GetOrCreateArchetype<T>(WorldType worldType) where T : IArchetypeDescriptor
-        {
             var archetypeType = typeof(T);
             if (archetypeType.IsAbstract)
             {
                 throw new NotImplementedException($"It's impossible to create an archetype from an abstract class: {archetypeType}");
             }
 
-            var entityArchetypeHolder = GetOrCreateArchetype(archetypeType);
-            switch (worldType)
-            {
-                case WorldType.DEFAULT:
-                    return entityArchetypeHolder.defaultArchetype;
-                case WorldType.CLIENT:
-                    return entityArchetypeHolder.clientArchetype;
-                case WorldType.SERVER:
-                    return entityArchetypeHolder.serverArchetype;
-            }
-
-            throw new NotImplementedException();
+            return GetOrCreateArchetype(archetypeType);
         }
 
-        private EntityArchetypeHolder GetOrCreateArchetype(Type archetypeType, ArchetypeAttribute attribute = null)
+        private EntityArchetype GetOrCreateArchetype(Type archetypeType, ArchetypeAttribute attribute = null)
         {
             if (m_archetypes.ContainsKey(archetypeType))
                 return m_archetypes[archetypeType];
@@ -107,44 +82,19 @@ namespace Plugins.Shared.ECSEntityBuilder.Archetypes
                         $"Archetype descriptor {archetypeType} should implement {typeof(IArchetypeDescriptor)} interface and have an empty constructor");
                 }
 
-                if (instance is IClientServerArchetypeDescriptor clientServerInstance)
-                {
-                    var clientComponents = clientServerInstance.Components.Concat(clientServerInstance.ClientOnlyComponents).ToArray();
-                    var clientArchetype = EntityWorldManager.Instance.Client.EntityManager.CreateArchetype(clientComponents);
-
-                    var serverComponents = clientServerInstance.Components.Concat(clientServerInstance.ServerOnlyComponents).ToArray();
-                    var serverArchetype = EntityWorldManager.Instance.Server.EntityManager.CreateArchetype(serverComponents);
-
-                    var archetypeHolder = new EntityArchetypeHolder
-                    {
-                        clientArchetype = clientArchetype,
-                        serverArchetype = serverArchetype
-                    };
-                    m_archetypes[archetypeType] = archetypeHolder;
-                    return archetypeHolder;
-                }
-                else if (instance is ICustomArchetypeDescriptor customArchetypeDescriptor)
+                if (instance is ICustomArchetypeDescriptor customArchetypeDescriptor)
                 {
                     var components = customArchetypeDescriptor.Components.Concat(customArchetypeDescriptor.CustomComponents).ToArray();
 
-                    var archetype = GetEntityManagerByWorldType(attribute?.WorldType ?? WorldType.DEFAULT).CreateArchetype(components);
-                    var archetypeHolder = new EntityArchetypeHolder
-                    {
-                        defaultArchetype = archetype,
-                    };
-                    m_archetypes[archetypeType] = archetypeHolder;
-                    return archetypeHolder;
+                    var archetype = World.DefaultGameObjectInjectionWorld.EntityManager.CreateArchetype(components);
+                    m_archetypes[archetypeType] = archetype;
+                    return archetype;
                 }
                 else
                 {
-                    var archetype = EntityWorldManager.Instance.Default.EntityManager.CreateArchetype(instance.Components);
-
-                    var archetypeHolder = new EntityArchetypeHolder
-                    {
-                        defaultArchetype = archetype
-                    };
-                    m_archetypes[archetypeType] = archetypeHolder;
-                    return archetypeHolder;
+                    var archetype = World.DefaultGameObjectInjectionWorld.EntityManager.CreateArchetype(instance.Components);
+                    m_archetypes[archetypeType] = archetype;
+                    return archetype;
                 }
             }
             catch (NotImplementedException)
@@ -154,19 +104,6 @@ namespace Plugins.Shared.ECSEntityBuilder.Archetypes
             catch (Exception e)
             {
                 throw new NotImplementedException($"Failed to instantiate archetype from archetype descriptor {archetypeType}", e);
-            }
-        }
-
-        private EntityManager GetEntityManagerByWorldType(WorldType worldType)
-        {
-            switch (worldType)
-            {
-                default:
-                    return EntityWorldManager.Instance.Default.EntityManager;
-                case WorldType.CLIENT:
-                    return EntityWorldManager.Instance.Client.EntityManager;
-                case WorldType.SERVER:
-                    return EntityWorldManager.Instance.Server.EntityManager;
             }
         }
     }

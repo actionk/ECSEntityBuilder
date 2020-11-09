@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Unity.Entities;
 
 namespace Plugins.ECSEntityBuilder.Extensions
@@ -11,6 +12,19 @@ namespace Plugins.ECSEntityBuilder.Extensions
             for (var i = 0; i < array.Length; i++)
                 array[i] = buffer[i];
             return array;
+        }
+
+        public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this DynamicBuffer<T> buffer, Func<T, KeyValuePair<TKey, TValue>> mapping)
+            where T : struct, IBufferElementData
+        {
+            var dictionary = new Dictionary<TKey, TValue>();
+            foreach (var entry in buffer)
+            {
+                var keyValuePair = mapping.Invoke(entry);
+                dictionary.Add(keyValuePair.Key, keyValuePair.Value);
+            }
+
+            return dictionary;
         }
 
         public static T2[] ToArray<T, T2>(this DynamicBuffer<T> buffer, Func<T, T2> mappingFunction) where T : struct, IBufferElementData

@@ -55,5 +55,14 @@ namespace Plugins.ECSEntityBuilder.Extensions
             else
                 buffer.Add(element);
         }
+
+        public static bool RemoveFirst<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate) where T : struct, IBufferElementData
+        {
+            var indexOfExistingElement = buffer.IndexOf(predicate);
+            if (indexOfExistingElement >= 0)
+                buffer.RemoveAt(indexOfExistingElement);
+
+            return indexOfExistingElement >= 0;
+        }
     }
 }

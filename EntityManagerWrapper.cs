@@ -116,7 +116,7 @@ namespace Plugins.ECSEntityBuilder
 #if UNITY_EDITOR
                     EntityManager.SetName(entity, name);
 #else
-                    EntityManager.AddComponentData(entity, new SetName {Value = new NativeString64(name)});
+                    EntityManager.AddComponentData(entity, new SetName {Value = new FixedString64(name)});
 #endif
                     return;
                 case EntityManagerType.ENTITY_COMMAND_BUFFER:

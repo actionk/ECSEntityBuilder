@@ -190,6 +190,15 @@ namespace Plugins.ECSEntityBuilder
             return this;
         }
 
+        public EntityWrapper ReplaceElementsInBuffer<T>(params T[] elements) where T : struct, IBufferElementData
+        {
+            var buffer = EntityManagerWrapper.AddBuffer<T>(Entity);
+            buffer.Clear();
+            foreach (var element in elements)
+                buffer.Add(element);
+            return this;
+        }
+
         public DynamicBuffer<T> GetBuffer<T>() where T : struct, IBufferElementData
         {
             return EntityManagerWrapper.GetBuffer<T>(Entity);

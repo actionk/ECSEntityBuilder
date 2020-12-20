@@ -141,24 +141,24 @@ namespace Plugins.ECSEntityBuilder
             return this;
         }
 
-        public T GetOrCreateGenericStep<T, TGenericValue>() where T : IEntityBuilderGenericStep<TGenericValue>
+        public T GetOrCreateGenericStep<T, TGenericValue>() where T : IEntityBuilderGenericStep<TGenericValue>, new()
         {
             var singletonStep = steps.FirstOrDefault(x => x is IEntityBuilderGenericStep<TGenericValue>);
             if (singletonStep != null)
                 return (T) singletonStep;
 
-            var createdSingletonStep = Activator.CreateInstance<T>();
+            var createdSingletonStep = new T();
             steps.AddLast(createdSingletonStep);
             return createdSingletonStep;
         }
 
-        public T GetOrCreateStep<T>() where T : IEntityBuilderStep
+        public T GetOrCreateStep<T>() where T : IEntityBuilderStep, new()
         {
             var singletonStep = steps.FirstOrDefault(x => x.GetType() == typeof(T));
             if (singletonStep != null)
                 return (T) singletonStep;
 
-            var createdSingletonStep = Activator.CreateInstance<T>();
+            var createdSingletonStep = new T();
             steps.AddLast(createdSingletonStep);
             return createdSingletonStep;
         }

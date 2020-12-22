@@ -243,5 +243,10 @@ namespace Plugins.ECSEntityBuilder
         {
             EntityManagerWrapper.AddComponentObject(Entity, componentObject);
         }
+
+        public DynamicBuffer<T> AddOrCreateBuffer<T>() where T : struct, IBufferElementData
+        {
+            return EntityManagerWrapper.HasComponent<T>(Entity) ? EntityManagerWrapper.GetBuffer<T>(Entity) : EntityManagerWrapper.AddBuffer<T>(Entity);
+        }
     }
 }

@@ -36,6 +36,12 @@ namespace Plugins.ECSEntityBuilder.Extensions
             return array;
         }
 
+        public static void ForEach<T>(this DynamicBuffer<T> buffer, Action<T> mappingFunction) where T : struct, IBufferElementData
+        {
+            for (var i = 0; i < buffer.Length; i++)
+                mappingFunction.Invoke(buffer[i]);
+        }
+
         public static int IndexOf<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate) where T : struct, IBufferElementData
         {
             for (var i = 0; i < buffer.Length; i++)

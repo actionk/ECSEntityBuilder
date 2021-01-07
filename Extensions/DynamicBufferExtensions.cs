@@ -72,6 +72,12 @@ namespace Plugins.ECSEntityBuilder.Extensions
                 buffer.Add(element);
         }
 
+        public static void AddRange<T>(this DynamicBuffer<T> buffer, IEnumerable<T> values) where T : struct, IBufferElementData
+        {
+            foreach (var value in values)
+                buffer.Add(value);
+        }
+
         public static bool RemoveFirst<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate) where T : struct, IBufferElementData
         {
             var indexOfExistingElement = buffer.IndexOf(predicate);

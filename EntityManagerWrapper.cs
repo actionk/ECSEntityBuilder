@@ -1,6 +1,7 @@
 using System;
 using Plugins.ECSEntityBuilder.Archetypes;
 using Plugins.ECSEntityBuilder.Components;
+using Plugins.ECSEntityBuilder.Extensions;
 using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
@@ -371,6 +372,12 @@ namespace Plugins.ECSEntityBuilder
             }
 
             throw new NotImplementedException();
+        }
+
+        public void ReplaceElementsInBuffer<T>(Entity entity, params T[] elements) where T : struct, IBufferElementData
+        {
+            var buffer = AddBuffer<T>(entity);
+            buffer.AddRange(elements);
         }
     }
 }

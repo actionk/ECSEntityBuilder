@@ -14,6 +14,16 @@ namespace Plugins.ECSEntityBuilder.Extensions
             return array;
         }
 
+        public static Dictionary<TKey, TValue> ToDictionary<TKey, TValue>(this DynamicBuffer<TValue> buffer, Func<TValue, TKey> mapping)
+            where TValue : struct, IBufferElementData
+        {
+            var dictionary = new Dictionary<TKey, TValue>();
+            foreach (var entry in buffer)
+                dictionary.Add(mapping.Invoke(entry), entry);
+
+            return dictionary;
+        }
+
         public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this DynamicBuffer<T> buffer, Func<T, KeyValuePair<TKey, TValue>> mapping)
             where T : struct, IBufferElementData
         {

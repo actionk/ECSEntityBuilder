@@ -374,6 +374,11 @@ namespace Plugins.ECSEntityBuilder
             throw new NotImplementedException();
         }
 
+        public EntityWrapper Wrap(Entity entity)
+        {
+            return EntityWrapper.Wrap(entity, this);
+        }
+
         public void ReplaceElementsInBuffer<T>(Entity entity, params T[] elements) where T : struct, IBufferElementData
         {
             var buffer = AddBuffer<T>(entity);

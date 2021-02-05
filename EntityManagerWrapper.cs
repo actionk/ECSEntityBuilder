@@ -379,10 +379,11 @@ namespace Plugins.ECSEntityBuilder
             return EntityWrapper.Wrap(entity, this);
         }
 
-        public void ReplaceElementsInBuffer<T>(Entity entity, params T[] elements) where T : struct, IBufferElementData
+        public DynamicBuffer<T> ReplaceElementsInBuffer<T>(Entity entity, params T[] elements) where T : struct, IBufferElementData
         {
             var buffer = AddBuffer<T>(entity);
             buffer.AddRange(elements);
+            return buffer;
         }
     }
 }

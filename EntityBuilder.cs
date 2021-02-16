@@ -171,6 +171,12 @@ namespace Plugins.ECSEntityBuilder
             return this;
         }
 
+        public EntityBuilder AddBuffer<T>() where T : struct, IBufferElementData
+        {
+            GetOrCreateGenericStep<AddBufferStep<T>, T>();
+            return this;
+        }
+
         public EntityBuilder AddElementToBuffer<T>(T element) where T : struct, IBufferElementData
         {
             GetOrCreateGenericStep<AddBufferStep<T>, T>().Add(element);

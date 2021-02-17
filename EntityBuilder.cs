@@ -143,7 +143,7 @@ namespace Plugins.ECSEntityBuilder
 
         public T GetOrCreateGenericStep<T, TGenericValue>() where T : IEntityBuilderGenericStep<TGenericValue>, new()
         {
-            var singletonStep = steps.FirstOrDefault(x => x is IEntityBuilderGenericStep<TGenericValue>);
+            var singletonStep = steps.FirstOrDefault(x => x is T);
             if (singletonStep != null)
                 return (T) singletonStep;
 

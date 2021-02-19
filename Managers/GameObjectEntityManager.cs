@@ -25,6 +25,16 @@ namespace Plugins.ECSEntityBuilder.Managers
             return gameObject;
         }
 
+        public GameObject CreateFromPrefab(GameObject prefab, Vector3 position, Quaternion rotation, bool enableImmediately = false)
+        {
+            var gameObject = Object.Instantiate(prefab, position, rotation);
+            if (!enableImmediately)
+                gameObject.SetActive(false);
+
+            Add(gameObject);
+            return gameObject;
+        }
+
         public void Add(GameObject gameObject)
         {
             m_instances[gameObject.GetInstanceID()] = gameObject;

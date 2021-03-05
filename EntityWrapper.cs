@@ -176,6 +176,12 @@ namespace Plugins.ECSEntityBuilder
             return EntityManagerWrapper.AddBuffer<T>(Entity);
         }
 
+        public EntityWrapper AppendToBuffer<T>(T elementData) where T : struct, IBufferElementData
+        {
+            EntityManagerWrapper.AppendToBuffer<T>(Entity, elementData);
+            return this;
+        }
+
         public EntityWrapper AddBuffer<T>() where T : struct, IBufferElementData
         {
             EntityManagerWrapper.AddBuffer<T>(Entity);

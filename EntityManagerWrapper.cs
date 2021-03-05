@@ -348,6 +348,27 @@ namespace Plugins.ECSEntityBuilder
             throw new NotImplementedException("Adding component object only possible using EntityManager, not buffer");
         }
 
+        public void AppendToBuffer<T>(Entity entity, T bufferElementData) where T : struct, IBufferElementData
+        {
+            switch (Type)
+            {
+                case EntityManagerType.ENTITY_MANAGER:
+                    var buffer = EntityManager.HasComponent<T>(entity) ? EntityManager.GetBuffer<T>(entity) : EntityManager.AddBuffer<T>(entity);
+                    buffer.Add(bufferElementData);
+                    break;
+                
+                case EntityManagerType.ENTITY_MANAGER_AND_COMMAND_BUFFER:
+                    EntityCommandBuffer.AppendToBuffer(entity, bufferElementData);
+                    return;
+                
+                case EntityManagerType.ENTITY_COMMAND_BUFFER_CONCURRENT:
+                    EntityCommandBufferConcurrent.AppendToBuffer(EntityCommandBufferJobIndex, entity, bufferElementData);
+                    return;
+            }
+
+            throw new NotImplementedException("Adding component object only possible using EntityManager, not buffer");
+        }
+
         public bool RemoveComponent<T>(Entity entity) where T : struct, IComponentData
         {
             switch (Type)

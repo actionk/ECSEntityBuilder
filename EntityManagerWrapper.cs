@@ -415,6 +415,7 @@ namespace Plugins.ECSEntityBuilder
         public DynamicBuffer<T> ReplaceElementsInBuffer<T>(Entity entity, params T[] elements) where T : struct, IBufferElementData
         {
             var buffer = AddBuffer<T>(entity);
+            buffer.Clear();
             buffer.AddRange(elements);
             return buffer;
         }

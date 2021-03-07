@@ -120,16 +120,13 @@ namespace Plugins.ECSEntityBuilder
 
         public void SetName(Entity entity, string name)
         {
+#if UNITY_EDITOR
             switch (Type)
             {
                 case EntityManagerType.MOCK:
                     return;
                 case EntityManagerType.ENTITY_MANAGER:
-#if UNITY_EDITOR
-                    EntityManager.SetName(entity, name);
-#else
                     EntityManager.AddComponentData(entity, new SetName {Value = new FixedString64(name)});
-#endif
                     return;
                 case EntityManagerType.ENTITY_COMMAND_BUFFER:
                 case EntityManagerType.ENTITY_MANAGER_AND_COMMAND_BUFFER:
@@ -141,6 +138,7 @@ namespace Plugins.ECSEntityBuilder
             }
 
             throw new NotImplementedException();
+#endif
         }
 
         public Entity CreateEntity(EntityArchetype entityArchetype)

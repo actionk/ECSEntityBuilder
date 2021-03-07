@@ -11,9 +11,11 @@ namespace Plugins.ECSEntityBuilder
     public class EntityManagerWrapper
     {
         public static EntityManagerWrapper Default => new EntityManagerWrapper(World.DefaultGameObjectInjectionWorld.EntityManager);
+        public static EntityManagerWrapper Mock => new EntityManagerWrapper();
 
         public enum EntityManagerType
         {
+            MOCK,
             ENTITY_MANAGER,
             ENTITY_COMMAND_BUFFER,
             ENTITY_COMMAND_BUFFER_CONCURRENT,
@@ -57,6 +59,11 @@ namespace Plugins.ECSEntityBuilder
             return new EntityManagerWrapper(componentSystem.EntityManager, componentSystem.PostUpdateCommands);
         }
 
+        private EntityManagerWrapper()
+        {
+            Type = EntityManagerType.MOCK;
+        }
+
         public EntityManagerWrapper(EntityManager entityManager)
         {
             EntityManager = entityManager;
@@ -97,6 +104,8 @@ namespace Plugins.ECSEntityBuilder
         {
             switch (Type)
             {
+                case EntityManagerType.MOCK:
+                    return Entity.Null;
                 case EntityManagerType.ENTITY_MANAGER:
                     return EntityManager.CreateEntity();
                 case EntityManagerType.ENTITY_COMMAND_BUFFER:
@@ -113,6 +122,8 @@ namespace Plugins.ECSEntityBuilder
         {
             switch (Type)
             {
+                case EntityManagerType.MOCK:
+                    return;
                 case EntityManagerType.ENTITY_MANAGER:
 #if UNITY_EDITOR
                     EntityManager.SetName(entity, name);
@@ -136,6 +147,8 @@ namespace Plugins.ECSEntityBuilder
         {
             switch (Type)
             {
+                case EntityManagerType.MOCK:
+                    return Entity.Null;
                 case EntityManagerType.ENTITY_MANAGER:
                     return EntityManager.CreateEntity(entityArchetype);
                 case EntityManagerType.ENTITY_COMMAND_BUFFER:
@@ -152,6 +165,8 @@ namespace Plugins.ECSEntityBuilder
         {
             switch (Type)
             {
+                case EntityManagerType.MOCK:
+                    return;
                 case EntityManagerType.ENTITY_MANAGER:
                     EntityManager.AddComponentData(entity, component);
                     return;
@@ -171,6 +186,8 @@ namespace Plugins.ECSEntityBuilder
         {
             switch (Type)
             {
+                case EntityManagerType.MOCK:
+                    return;
                 case EntityManagerType.ENTITY_MANAGER:
                     EntityManager.AddComponent<T>(entity);
                     return;
@@ -190,6 +207,8 @@ namespace Plugins.ECSEntityBuilder
         {
             switch (Type)
             {
+                case EntityManagerType.MOCK:
+                    return;
                 case EntityManagerType.ENTITY_MANAGER:
                     EntityManager.SetComponentData(entity, component);
                     return;
@@ -209,6 +228,8 @@ namespace Plugins.ECSEntityBuilder
         {
             switch (Type)
             {
+                case EntityManagerType.MOCK:
+                    return;
                 case EntityManagerType.ENTITY_MANAGER:
                     EntityManager.AddSharedComponentData(entity, component);
                     return;
@@ -228,6 +249,8 @@ namespace Plugins.ECSEntityBuilder
         {
             switch (Type)
             {
+                case EntityManagerType.MOCK:
+                    return default;
                 case EntityManagerType.ENTITY_MANAGER:
                     return EntityManager.AddBuffer<T>(entity);
                 case EntityManagerType.ENTITY_COMMAND_BUFFER:
@@ -244,6 +267,8 @@ namespace Plugins.ECSEntityBuilder
         {
             switch (Type)
             {
+                case EntityManagerType.MOCK:
+                    return default;
                 case EntityManagerType.ENTITY_MANAGER:
                 case EntityManagerType.ENTITY_MANAGER_AND_COMMAND_BUFFER:
                     return EntityManager.GetBuffer<T>(entity);
@@ -256,6 +281,8 @@ namespace Plugins.ECSEntityBuilder
         {
             switch (Type)
             {
+                case EntityManagerType.MOCK:
+                    return default;
                 case EntityManagerType.ENTITY_MANAGER:
                 case EntityManagerType.ENTITY_MANAGER_AND_COMMAND_BUFFER:
                     return EntityManager.HasComponent<T>(entity) ? EntityManager.GetBuffer<T>(entity) : EntityManager.AddBuffer<T>(entity);
@@ -268,6 +295,8 @@ namespace Plugins.ECSEntityBuilder
         {
             switch (Type)
             {
+                case EntityManagerType.MOCK:
+                    return false;
                 case EntityManagerType.ENTITY_MANAGER:
                 case EntityManagerType.ENTITY_MANAGER_AND_COMMAND_BUFFER:
                     return EntityManager.HasComponent<T>(entity);
@@ -280,6 +309,8 @@ namespace Plugins.ECSEntityBuilder
         {
             switch (Type)
             {
+                case EntityManagerType.MOCK:
+                    return default;
                 case EntityManagerType.ENTITY_MANAGER:
                 case EntityManagerType.ENTITY_MANAGER_AND_COMMAND_BUFFER:
                     return EntityManager.CreateArchetype(components);
@@ -292,6 +323,9 @@ namespace Plugins.ECSEntityBuilder
         {
             switch (Type)
             {
+                case EntityManagerType.MOCK:
+                    return;
+
                 case EntityManagerType.ENTITY_MANAGER:
                     EntityManager.DestroyEntity(entity);
                     return;
@@ -311,6 +345,8 @@ namespace Plugins.ECSEntityBuilder
         {
             switch (Type)
             {
+                case EntityManagerType.MOCK:
+                    return Entity.Null;
                 case EntityManagerType.ENTITY_MANAGER:
                     return EntityManager.Instantiate(prefabEntity);
                 case EntityManagerType.ENTITY_COMMAND_BUFFER:
@@ -327,6 +363,8 @@ namespace Plugins.ECSEntityBuilder
         {
             switch (Type)
             {
+                case EntityManagerType.MOCK:
+                    return default;
                 case EntityManagerType.ENTITY_MANAGER:
                 case EntityManagerType.ENTITY_MANAGER_AND_COMMAND_BUFFER:
                     return EntityManager.GetComponentData<T>(entity);
@@ -339,6 +377,8 @@ namespace Plugins.ECSEntityBuilder
         {
             switch (Type)
             {
+                case EntityManagerType.MOCK:
+                    return;
                 case EntityManagerType.ENTITY_MANAGER:
                 case EntityManagerType.ENTITY_MANAGER_AND_COMMAND_BUFFER:
                     EntityManager.AddComponentObject(entity, componentObject);
@@ -352,15 +392,18 @@ namespace Plugins.ECSEntityBuilder
         {
             switch (Type)
             {
+                case EntityManagerType.MOCK:
+                    return;
+
                 case EntityManagerType.ENTITY_MANAGER:
                     var buffer = EntityManager.HasComponent<T>(entity) ? EntityManager.GetBuffer<T>(entity) : EntityManager.AddBuffer<T>(entity);
                     buffer.Add(bufferElementData);
                     break;
-                
+
                 case EntityManagerType.ENTITY_MANAGER_AND_COMMAND_BUFFER:
                     EntityCommandBuffer.AppendToBuffer(entity, bufferElementData);
                     return;
-                
+
                 case EntityManagerType.ENTITY_COMMAND_BUFFER_CONCURRENT:
                     EntityCommandBufferConcurrent.AppendToBuffer(EntityCommandBufferJobIndex, entity, bufferElementData);
                     return;
@@ -373,6 +416,9 @@ namespace Plugins.ECSEntityBuilder
         {
             switch (Type)
             {
+                case EntityManagerType.MOCK:
+                    return false;
+
                 case EntityManagerType.ENTITY_MANAGER:
                     return EntityManager.RemoveComponent<T>(entity);
 
@@ -395,6 +441,8 @@ namespace Plugins.ECSEntityBuilder
 
             switch (Type)
             {
+                case EntityManagerType.MOCK:
+                    return Entity.Null;
                 case EntityManagerType.ENTITY_MANAGER:
                     return EntityManager.CreateEntity(archetype);
                 case EntityManagerType.ENTITY_COMMAND_BUFFER:

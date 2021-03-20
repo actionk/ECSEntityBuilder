@@ -281,9 +281,12 @@ namespace Plugins.ECSEntityBuilder
             {
                 case EntityManagerType.MOCK:
                     return default;
+                
                 case EntityManagerType.ENTITY_MANAGER:
-                case EntityManagerType.ENTITY_MANAGER_AND_COMMAND_BUFFER:
                     return EntityManager.HasComponent<T>(entity) ? EntityManager.GetBuffer<T>(entity) : EntityManager.AddBuffer<T>(entity);
+                
+                case EntityManagerType.ENTITY_MANAGER_AND_COMMAND_BUFFER:
+                    return EntityManager.HasComponent<T>(entity) ? EntityManager.GetBuffer<T>(entity) : EntityCommandBuffer.AddBuffer<T>(entity);
             }
 
             throw new NotImplementedException();

@@ -198,7 +198,10 @@ namespace Plugins.ECSEntityBuilder
 
         public EntityWrapper ReplaceElementsInBuffer<T>(params T[] elements) where T : struct, IBufferElementData
         {
-            var buffer = EntityManagerWrapper.AddBuffer<T>(Entity);
+            if (Entity.Index < 0)
+                return AddElementsToBuffer(elements);
+
+            var buffer = EntityManagerWrapper.GetOrCreateBuffer<T>(Entity);
             buffer.Clear();
             foreach (var element in elements)
                 buffer.Add(element);

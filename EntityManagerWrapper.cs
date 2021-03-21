@@ -436,6 +436,29 @@ namespace Plugins.ECSEntityBuilder
             throw new NotImplementedException();
         }
 
+        public bool RemoveComponent(Entity entity, ComponentType componentType)
+        {
+            switch (Type)
+            {
+                case EntityManagerType.MOCK:
+                    return false;
+
+                case EntityManagerType.ENTITY_MANAGER:
+                    return EntityManager.RemoveComponent(entity, componentType);
+
+                case EntityManagerType.ENTITY_COMMAND_BUFFER:
+                case EntityManagerType.ENTITY_MANAGER_AND_COMMAND_BUFFER:
+                    EntityCommandBuffer.RemoveComponent(entity, componentType);
+                    return true;
+
+                case EntityManagerType.ENTITY_COMMAND_BUFFER_CONCURRENT:
+                    EntityCommandBufferConcurrent.RemoveComponent(EntityCommandBufferJobIndex, entity, componentType);
+                    return true;
+            }
+
+            throw new NotImplementedException();
+        }
+
         public Entity CreateEntityFromArchetype<T>() where T : IArchetypeDescriptor
         {
             var archetype = EntityArchetypeManager.Instance.GetOrCreateArchetype<T>();

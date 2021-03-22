@@ -121,10 +121,10 @@ namespace Plugins.ECSEntityBuilder
                     return;
                 case EntityManagerType.ENTITY_COMMAND_BUFFER:
                 case EntityManagerType.ENTITY_MANAGER_AND_COMMAND_BUFFER:
-                    EntityCommandBuffer.AddComponent(entity, new SetName {Value = new FixedString64(name)});
+                    EntityCommandBuffer.AddComponent(entity, new SetName {value = new FixedString64(name)});
                     return;
                 case EntityManagerType.ENTITY_COMMAND_BUFFER_CONCURRENT:
-                    EntityCommandBufferConcurrent.AddComponent(EntityCommandBufferJobIndex, entity, new SetName {Value = new FixedString64(name)});
+                    EntityCommandBufferConcurrent.AddComponent(EntityCommandBufferJobIndex, entity, new SetName {value = new FixedString64(name)});
                     return;
             }
 

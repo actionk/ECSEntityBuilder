@@ -13,7 +13,7 @@ namespace Plugins.ECSEntityBuilder.Systems
                 .ForEach((Entity entity, ref SetName setName) =>
                 {
 #if UNITY_EDITOR
-                    EntityManager.SetName(entity, setName.Value.ToString());
+                    EntityManager.SetName(entity, setName.value.ToString());
 #endif
                     PostUpdateCommands.AddComponent<HasName>(entity);
                 });

@@ -491,5 +491,13 @@ namespace Plugins.ECSEntityBuilder
             buffer.AddRange(elements);
             return buffer;
         }
+
+        public void ToggleComponent<T>(Entity entity, bool value) where T: struct,IComponentData
+        {
+            if (value)
+                AddComponent<T>(entity);
+            else
+                RemoveComponent<T>(entity);
+        }
     }
 }

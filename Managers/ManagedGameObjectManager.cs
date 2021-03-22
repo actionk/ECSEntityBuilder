@@ -3,11 +3,15 @@ using UnityEngine;
 
 namespace Plugins.ECSEntityBuilder.Managers
 {
-    public class GameObjectEntityManager
+    public class ManagedGameObjectManager
     {
-        public Transform DefaultParentTransform { get; set; }
-
         private readonly Dictionary<int, GameObject> m_instances = new Dictionary<int, GameObject>();
+        private Transform m_defaultParentTransform;
+
+        public void Initialize()
+        {
+            m_defaultParentTransform = Object.FindObjectOfType<ManagedGameObjectContainer>().transform;
+        }
 
         public GameObject GetByInstanceID(int instanceId)
         {
@@ -17,7 +21,17 @@ namespace Plugins.ECSEntityBuilder.Managers
 
         public GameObject CreateFromPrefab(GameObject prefab, bool enableImmediately = false)
         {
-            var gameObject = Object.Instantiate(prefab, DefaultParentTransform);
+            var gameObject = Object.Instantiate(prefab, m_defaultParentTransform);
+            if (!enableImmediately)
+                gameObject.SetActive(false);
+
+            Add(gameObject);
+            return gameObject;
+        }
+
+        public GameObject CreateFromPrefab(GameObject prefab, Vector3 position, Quaternion rotation, bool enableImmediately = false)
+        {
+            var gameObject = Object.Instantiate(prefab, position, rotation, m_defaultParentTransform);
             if (!enableImmediately)
                 gameObject.SetActive(false);
 
@@ -39,17 +53,17 @@ namespace Plugins.ECSEntityBuilder.Managers
 
 #region Singleton
 
-        private static GameObjectEntityManager INSTANCE = new GameObjectEntityManager();
+        private static ManagedGameObjectManager INSTANCE = new ManagedGameObjectManager();
 
-        static GameObjectEntityManager()
+        static ManagedGameObjectManager()
         {
         }
 
-        private GameObjectEntityManager()
+        private ManagedGameObjectManager()
         {
         }
 
-        public static GameObjectEntityManager Instance
+        public static ManagedGameObjectManager Instance
         {
             get { return INSTANCE; }
         }
@@ -64,7 +78,7 @@ namespace Plugins.ECSEntityBuilder.Managers
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         public static void Reset()
         {
-            INSTANCE = new GameObjectEntityManager();
+            INSTANCE = new ManagedGameObjectManager();
         }
 #endif
 

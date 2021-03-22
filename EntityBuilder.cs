@@ -141,24 +141,24 @@ namespace Plugins.ECSEntityBuilder
             return this;
         }
 
-        public T GetOrCreateGenericStep<T, TGenericValue>() where T : IEntityBuilderGenericStep<TGenericValue>
+        public T GetOrCreateGenericStep<T, TGenericValue>() where T : IEntityBuilderGenericStep<TGenericValue>, new()
         {
-            var singletonStep = steps.FirstOrDefault(x => x is IEntityBuilderGenericStep<TGenericValue>);
+            var singletonStep = steps.FirstOrDefault(x => x is T);
             if (singletonStep != null)
                 return (T) singletonStep;
 
-            var createdSingletonStep = Activator.CreateInstance<T>();
+            var createdSingletonStep = new T();
             steps.AddLast(createdSingletonStep);
             return createdSingletonStep;
         }
 
-        public T GetOrCreateStep<T>() where T : IEntityBuilderStep
+        public T GetOrCreateStep<T>() where T : IEntityBuilderStep, new()
         {
             var singletonStep = steps.FirstOrDefault(x => x.GetType() == typeof(T));
             if (singletonStep != null)
                 return (T) singletonStep;
 
-            var createdSingletonStep = Activator.CreateInstance<T>();
+            var createdSingletonStep = new T();
             steps.AddLast(createdSingletonStep);
             return createdSingletonStep;
         }
@@ -171,6 +171,12 @@ namespace Plugins.ECSEntityBuilder
             return this;
         }
 
+        public EntityBuilder AddBuffer<T>() where T : struct, IBufferElementData
+        {
+            GetOrCreateGenericStep<AddBufferStep<T>, T>();
+            return this;
+        }
+
         public EntityBuilder AddElementToBuffer<T>(T element) where T : struct, IBufferElementData
         {
             GetOrCreateGenericStep<AddBufferStep<T>, T>().Add(element);
@@ -178,6 +184,14 @@ namespace Plugins.ECSEntityBuilder
         }
 
         public EntityBuilder AddElementsToBuffer<T>(params T[] elements) where T : struct, IBufferElementData
+        {
+            foreach (var element in elements)
+                GetOrCreateGenericStep<AddBufferStep<T>, T>().Add(element);
+
+            return this;
+        }
+
+        public EntityBuilder AddElementsToBuffer<T>(IEnumerable<T> elements) where T : struct, IBufferElementData
         {
             foreach (var element in elements)
                 GetOrCreateGenericStep<AddBufferStep<T>, T>().Add(element);

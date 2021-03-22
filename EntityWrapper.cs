@@ -176,6 +176,12 @@ namespace Plugins.ECSEntityBuilder
             return EntityManagerWrapper.AddBuffer<T>(Entity);
         }
 
+        public EntityWrapper AppendToBuffer<T>(T elementData) where T : struct, IBufferElementData
+        {
+            EntityManagerWrapper.AppendToBuffer<T>(Entity, elementData);
+            return this;
+        }
+
         public EntityWrapper AddBuffer<T>() where T : struct, IBufferElementData
         {
             EntityManagerWrapper.AddBuffer<T>(Entity);
@@ -185,6 +191,18 @@ namespace Plugins.ECSEntityBuilder
         public EntityWrapper AddElementsToBuffer<T>(params T[] elements) where T : struct, IBufferElementData
         {
             var buffer = EntityManagerWrapper.AddBuffer<T>(Entity);
+            foreach (var element in elements)
+                buffer.Add(element);
+            return this;
+        }
+
+        public EntityWrapper ReplaceElementsInBuffer<T>(params T[] elements) where T : struct, IBufferElementData
+        {
+            if (Entity.Index < 0)
+                return AddElementsToBuffer(elements);
+
+            var buffer = EntityManagerWrapper.GetOrCreateBuffer<T>(Entity);
+            buffer.Clear();
             foreach (var element in elements)
                 buffer.Add(element);
             return this;
@@ -220,7 +238,7 @@ namespace Plugins.ECSEntityBuilder
             return EntityManagerWrapper.HasComponent<T>(Entity) ? EntityManagerWrapper.GetComponentData<T>(Entity) : default(T);
         }
 
-        public bool HasComponent<T>() where T : struct, IComponentData
+        public bool HasComponent<T>() where T : struct
         {
             return EntityManagerWrapper.HasComponent<T>(Entity);
         }
@@ -233,6 +251,11 @@ namespace Plugins.ECSEntityBuilder
         public void AddComponentObject(Component componentObject)
         {
             EntityManagerWrapper.AddComponentObject(Entity, componentObject);
+        }
+
+        public DynamicBuffer<T> AddOrCreateBuffer<T>() where T : struct, IBufferElementData
+        {
+            return EntityManagerWrapper.HasComponent<T>(Entity) ? EntityManagerWrapper.GetBuffer<T>(Entity) : EntityManagerWrapper.AddBuffer<T>(Entity);
         }
     }
 }

@@ -126,7 +126,7 @@ namespace Plugins.ECSEntityBuilder
                 case EntityManagerType.MOCK:
                     return;
                 case EntityManagerType.ENTITY_MANAGER:
-                    EntityManager.AddComponentData(entity, new SetName {Value = new FixedString64(name)});
+                    EntityManager.AddComponentData(entity, new SetName {value = new FixedString64(name)});
                     return;
                 case EntityManagerType.ENTITY_COMMAND_BUFFER:
                 case EntityManagerType.ENTITY_MANAGER_AND_COMMAND_BUFFER:

@@ -72,6 +72,55 @@ namespace Plugins.ECSEntityBuilder.Extensions
                 buffer.Add(element);
         }
 
+        public delegate void UpdateDelegate<T>(ref T data);
+
+        public static void UpdateAt<T>(this DynamicBuffer<T> buffer, int index, UpdateDelegate<T> action) where T : struct, IBufferElementData
+        {
+            var element = buffer[index];
+            action(ref element);
+            buffer[index] = element;
+        }
+
+        public static void UpdateIf<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate, UpdateDelegate<T> action) where T : struct, IBufferElementData
+        {
+            for (int i = 0; i < buffer.Length; i++)
+            {
+                T element = buffer[i];
+                if (predicate(element))
+                {
+                    UpdateAt(buffer, i, action);
+                }
+            }
+        }
+
+        public static int FindFirstIndex<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate) where T : struct, IBufferElementData
+        {
+            for (int i = 0; i < buffer.Length; i++)
+            {
+                if (predicate(buffer[i]))
+                {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
+
+        public static bool FindFirstOrDefault<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate, out T result) where T : struct, IBufferElementData
+        {
+            foreach (var element in buffer)
+            {
+                if (predicate(element))
+                {
+                    result = element;
+                    return true;
+                }
+            }
+
+            result = default;
+            return false;
+        }
+
         public static void AddRange<T>(this DynamicBuffer<T> buffer, IEnumerable<T> values) where T : struct, IBufferElementData
         {
             foreach (var value in values)

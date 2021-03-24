@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Sirenix.Utilities;
 using Unity.Entities;
 
 namespace Plugins.ECSEntityBuilder.Extensions
@@ -12,6 +13,22 @@ namespace Plugins.ECSEntityBuilder.Extensions
             for (var i = 0; i < array.Length; i++)
                 array[i] = buffer[i];
             return array;
+        }
+        
+        public static HashSet<T> ToHashSet<T>(this DynamicBuffer<T> buffer) where T : struct, IBufferElementData
+        {
+            var set = new HashSet<T>();
+            for (var i = 0; i < buffer.Length; i++)
+                set.Add(buffer[i]);
+            return set;
+        }
+        
+        public static HashSet<TOutput> ToHashSet<TInput, TOutput>(this DynamicBuffer<TInput> buffer, Func<TInput, TOutput> mappingFunction) where TInput : struct, IBufferElementData
+        {
+            var set = new HashSet<TOutput>();
+            for (var i = 0; i < buffer.Length; i++)
+                set.Add(mappingFunction(buffer[i]));
+            return set;
         }
 
         public static Dictionary<TKey, TValue> ToDictionary<TKey, TValue>(this DynamicBuffer<TValue> buffer, Func<TValue, TKey> mapping)

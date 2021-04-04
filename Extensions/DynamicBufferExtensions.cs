@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Sirenix.Utilities;
 using Unity.Entities;
 
 namespace Plugins.ECSEntityBuilder.Extensions

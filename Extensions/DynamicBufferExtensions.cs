@@ -90,6 +90,14 @@ namespace Plugins.ECSEntityBuilder.Extensions
 
         public delegate void UpdateDelegate<T>(ref T data);
 
+        public static void UpdateAll<T>(this DynamicBuffer<T> buffer, UpdateDelegate<T> action) where T : struct, IBufferElementData
+        {
+            for (int index = 0; index < buffer.Length; index++)
+            {
+                UpdateAt(buffer, index, action);
+            }
+        }
+
         public static void UpdateAt<T>(this DynamicBuffer<T> buffer, int index, UpdateDelegate<T> action) where T : struct, IBufferElementData
         {
             var element = buffer[index];

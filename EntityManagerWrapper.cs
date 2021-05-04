@@ -499,5 +499,28 @@ namespace Plugins.ECSEntityBuilder
             else
                 RemoveComponent<T>(entity);
         }
+
+        public bool RemoveBuffer<T>(Entity entity) where T : struct, IBufferElementData
+        {
+            switch (Type)
+            {
+                case EntityManagerType.MOCK:
+                    return false;
+
+                case EntityManagerType.ENTITY_MANAGER:
+                    return EntityManager.RemoveComponent<T>(entity);
+
+                case EntityManagerType.ENTITY_COMMAND_BUFFER:
+                case EntityManagerType.ENTITY_MANAGER_AND_COMMAND_BUFFER:
+                    EntityCommandBuffer.RemoveComponent<T>(entity);
+                    return true;
+
+                case EntityManagerType.ENTITY_COMMAND_BUFFER_CONCURRENT:
+                    EntityCommandBufferConcurrent.RemoveComponent<T>(EntityCommandBufferJobIndex, entity);
+                    return true;
+            }
+
+            throw new NotImplementedException();
+        }
     }
 }

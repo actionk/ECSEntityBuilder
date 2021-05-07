@@ -42,6 +42,16 @@ namespace Plugins.ECSEntityBuilder
             return new EntityWrapper(entityManagerWrapper.CreateEntityFromArchetype<T>(), entityManagerWrapper);
         }
 
+        public static EntityWrapper CreateEntity<T>(EntityManagerWrapper entityManagerWrapper) where T : IArchetypeDescriptor
+        {
+            return new EntityWrapper(entityManagerWrapper.CreateEntityFromArchetype<T>(), entityManagerWrapper);
+        }
+
+        public static EntityWrapper CreateEntityFromArchetype(EntityArchetype archetype, EntityManagerWrapper entityManagerWrapper)
+        {
+            return new EntityWrapper(entityManagerWrapper.CreateEntityFromArchetype(archetype), entityManagerWrapper);
+        }
+
         public static EntityWrapper CreateEntity(int threadId, EntityCommandBuffer.ParallelWriter entityCommandBuffer)
         {
             var entityManagerWrapper = EntityManagerWrapper.FromJobCommandBuffer(entityCommandBuffer, threadId);
@@ -193,7 +203,7 @@ namespace Plugins.ECSEntityBuilder
             var buffer = EntityManagerWrapper.AddBuffer<T>(Entity);
             for (var i = 0; i < repeat; i++)
                 buffer.Add(new T());
-            
+
             return this;
         }
 

@@ -478,7 +478,11 @@ namespace Plugins.ECSEntityBuilder
         public Entity CreateEntityFromArchetype<T>() where T : IArchetypeDescriptor
         {
             var archetype = EntityArchetypeManager.Instance.GetOrCreateArchetype<T>();
+            return CreateEntityFromArchetype(archetype);
+        }
 
+        public Entity CreateEntityFromArchetype(EntityArchetype archetype)
+        {
             switch (Type)
             {
                 case EntityManagerType.MOCK:

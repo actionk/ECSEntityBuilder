@@ -34,6 +34,22 @@ namespace Plugins.ECSEntityBuilder
             return $"{nameof(Type)}: {Type}";
         }
 
+        public World World
+        {
+            get
+            {
+                switch (Type)
+                {
+                    default:
+                        throw new NotImplementedException();
+
+                    case EntityManagerType.ENTITY_MANAGER:
+                    case EntityManagerType.ENTITY_MANAGER_AND_COMMAND_BUFFER:
+                        return EntityManager.World;
+                }
+            }
+        }
+
         public static EntityManagerWrapper FromManager(EntityManager dstManager)
         {
             return new EntityManagerWrapper(dstManager);
@@ -281,10 +297,10 @@ namespace Plugins.ECSEntityBuilder
             {
                 case EntityManagerType.MOCK:
                     return default;
-                
+
                 case EntityManagerType.ENTITY_MANAGER:
                     return EntityManager.HasComponent<T>(entity) ? EntityManager.GetBuffer<T>(entity) : EntityManager.AddBuffer<T>(entity);
-                
+
                 case EntityManagerType.ENTITY_MANAGER_AND_COMMAND_BUFFER:
                     return EntityManager.HasComponent<T>(entity) ? EntityManager.GetBuffer<T>(entity) : EntityCommandBuffer.AddBuffer<T>(entity);
             }
@@ -492,7 +508,7 @@ namespace Plugins.ECSEntityBuilder
             return buffer;
         }
 
-        public void ToggleComponent<T>(Entity entity, bool value) where T: struct,IComponentData
+        public void ToggleComponent<T>(Entity entity, bool value) where T : struct, IComponentData
         {
             if (value)
                 AddComponent<T>(entity);

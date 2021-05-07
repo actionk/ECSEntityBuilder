@@ -130,7 +130,7 @@ namespace Plugins.ECSEntityBuilder.Extensions
             return -1;
         }
 
-        public static bool FindFirstOrDefault<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate, out T result) where T : struct, IBufferElementData
+        public static bool TryGetValue<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate, out T result) where T : struct, IBufferElementData
         {
             foreach (var element in buffer)
             {

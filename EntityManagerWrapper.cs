@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Plugins.ECSEntityBuilder.Archetypes;
 using Plugins.ECSEntityBuilder.Components;
 using Plugins.ECSEntityBuilder.Extensions;
@@ -505,6 +506,14 @@ namespace Plugins.ECSEntityBuilder
         }
 
         public DynamicBuffer<T> ReplaceElementsInBuffer<T>(Entity entity, params T[] elements) where T : struct, IBufferElementData
+        {
+            var buffer = AddBuffer<T>(entity);
+            buffer.Clear();
+            buffer.AddRange(elements);
+            return buffer;
+        }
+
+        public DynamicBuffer<T> ReplaceElementsInBuffer<T>(Entity entity, IEnumerable<T> elements) where T : struct, IBufferElementData
         {
             var buffer = AddBuffer<T>(entity);
             buffer.Clear();

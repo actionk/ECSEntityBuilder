@@ -117,6 +117,21 @@ namespace Plugins.ECSEntityBuilder.Extensions
             }
         }
 
+        public static bool UpdateFirstIf<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate, UpdateDelegate<T> action) where T : struct, IBufferElementData
+        {
+            for (int i = 0; i < buffer.Length; i++)
+            {
+                T element = buffer[i];
+                if (predicate(element))
+                {
+                    UpdateAt(buffer, i, action);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public static int FindFirstIndex<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate) where T : struct, IBufferElementData
         {
             for (int i = 0; i < buffer.Length; i++)
@@ -158,6 +173,18 @@ namespace Plugins.ECSEntityBuilder.Extensions
                 buffer.RemoveAt(indexOfExistingElement);
 
             return indexOfExistingElement >= 0;
+        }
+
+        public static bool ReplaceFirst<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate, T replaceWith) where T : struct, IBufferElementData
+        {
+            var indexOfExistingElement = buffer.IndexOf(predicate);
+            if (indexOfExistingElement >= 0)
+            {
+                buffer[indexOfExistingElement] = replaceWith;
+                return true;
+            }
+
+            return false;
         }
     }
 }

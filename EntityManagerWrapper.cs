@@ -322,6 +322,18 @@ namespace Plugins.ECSEntityBuilder
 
             throw new NotImplementedException();
         }
+        
+        public bool TryGetComponent<T>(Entity entity, out T output) where T: struct, IComponentData
+        {
+            if (HasComponent<T>(entity))
+            {
+                output = GetComponentData<T>(entity);
+                return true;
+            }
+
+            output = default;
+            return false;
+        }
 
         public EntityArchetype CreateArchetype(ComponentType[] components)
         {

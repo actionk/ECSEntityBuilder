@@ -13,7 +13,7 @@ namespace Plugins.ECSEntityBuilder.Extensions
                 array[i] = buffer[i];
             return array;
         }
-        
+
         public static HashSet<T> ToHashSet<T>(this DynamicBuffer<T> buffer) where T : struct, IBufferElementData
         {
             var set = new HashSet<T>();
@@ -21,7 +21,7 @@ namespace Plugins.ECSEntityBuilder.Extensions
                 set.Add(buffer[i]);
             return set;
         }
-        
+
         public static HashSet<TOutput> ToHashSet<TInput, TOutput>(this DynamicBuffer<TInput> buffer, Func<TInput, TOutput> mappingFunction) where TInput : struct, IBufferElementData
         {
             var set = new HashSet<TOutput>();
@@ -77,6 +77,11 @@ namespace Plugins.ECSEntityBuilder.Extensions
             }
 
             return -1;
+        }
+
+        public static bool Contains<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate) where T : struct, IBufferElementData
+        {
+            return buffer.IndexOf(predicate) != -1;
         }
 
         public static void AddOrReplace<T>(this DynamicBuffer<T> buffer, T element, Predicate<T> predicate) where T : struct, IBufferElementData
@@ -157,6 +162,24 @@ namespace Plugins.ECSEntityBuilder.Extensions
             }
 
             result = default;
+            return false;
+        }
+
+        public static bool TryGetValueWithIndex<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate, out T result, out int index) where T : struct, IBufferElementData
+        {
+            for(var i = 0; i < buffer.Length; i++)
+            {
+                var element = buffer[i];
+                if (predicate(element))
+                {
+                    result = element;
+                    index = i;
+                    return true;
+                }
+            }
+
+            result = default;
+            index = default;
             return false;
         }
 

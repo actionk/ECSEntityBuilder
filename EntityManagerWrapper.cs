@@ -334,6 +334,18 @@ namespace Plugins.ECSEntityBuilder
             output = default;
             return false;
         }
+        
+        public bool TryGetBuffer<T>(Entity entity, out DynamicBuffer<T> output) where T: struct, IBufferElementData
+        {
+            if (HasComponent<T>(entity))
+            {
+                output = GetBuffer<T>(entity);
+                return true;
+            }
+
+            output = default;
+            return false;
+        }
 
         public EntityArchetype CreateArchetype(ComponentType[] components)
         {

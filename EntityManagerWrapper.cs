@@ -135,6 +135,11 @@ namespace Plugins.ECSEntityBuilder
             throw new NotImplementedException();
         }
 
+        public EntityWrapper CreateEntityAndWrap()
+        {
+            return EntityWrapper.Wrap(CreateEntity(), this);
+        }
+
         public void SetName(Entity entity, string name)
         {
 #if UNITY_EDITOR
@@ -410,6 +415,20 @@ namespace Plugins.ECSEntityBuilder
                 case EntityManagerType.ENTITY_MANAGER:
                 case EntityManagerType.ENTITY_MANAGER_AND_COMMAND_BUFFER:
                     return EntityManager.GetComponentData<T>(entity);
+            }
+
+            throw new NotImplementedException();
+        }
+
+        public T GetComponentObject<T>(Entity entity) where T : class
+        {
+            switch (Type)
+            {
+                case EntityManagerType.MOCK:
+                    return default;
+                case EntityManagerType.ENTITY_MANAGER:
+                case EntityManagerType.ENTITY_MANAGER_AND_COMMAND_BUFFER:
+                    return EntityManager.GetComponentObject<T>(entity);
             }
 
             throw new NotImplementedException();

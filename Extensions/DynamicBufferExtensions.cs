@@ -79,6 +79,17 @@ namespace Plugins.ECSEntityBuilder.Extensions
             return -1;
         }
 
+        public static bool HasAny<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate) where T : struct, IBufferElementData
+        {
+            for (var i = 0; i < buffer.Length; i++)
+            {
+                if (predicate.Invoke(buffer[i]))
+                    return true;
+            }
+
+            return false;
+        }
+
         public static bool Contains<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate) where T : struct, IBufferElementData
         {
             return buffer.IndexOf(predicate) != -1;

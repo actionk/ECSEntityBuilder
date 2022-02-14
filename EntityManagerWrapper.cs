@@ -459,7 +459,7 @@ namespace Plugins.ECSEntityBuilder
                 case EntityManagerType.ENTITY_MANAGER:
                     var buffer = EntityManager.HasComponent<T>(entity) ? EntityManager.GetBuffer<T>(entity) : EntityManager.AddBuffer<T>(entity);
                     buffer.Add(bufferElementData);
-                    break;
+                    return;
 
                 case EntityManagerType.ENTITY_MANAGER_AND_COMMAND_BUFFER:
                     EntityCommandBuffer.AppendToBuffer(entity, bufferElementData);

@@ -283,6 +283,11 @@ namespace Plugins.ECSEntityBuilder
             throw new NotImplementedException();
         }
 
+        public T[] GetBufferAsArray<T>(Entity entity) where T : struct, IBufferElementData
+        {
+            return GetBuffer<T>(entity).ToArray();
+        }
+
         public DynamicBuffer<T> GetBuffer<T>(Entity entity) where T : struct, IBufferElementData
         {
             switch (Type)

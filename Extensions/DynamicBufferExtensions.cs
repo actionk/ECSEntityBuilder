@@ -160,6 +160,18 @@ namespace Plugins.ECSEntityBuilder.Extensions
 
             return -1;
         }
+        
+        public static void RemoveAll<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate) where T : struct, IBufferElementData
+        {
+            for (int i = 0; i < buffer.Length; i++)
+            {
+                if (predicate(buffer[i]))
+                {
+                    buffer.RemoveAt(i);
+                    i--;
+                }
+            }
+        }
 
         public static bool TryGetValue<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate, out T result) where T : struct, IBufferElementData
         {
@@ -174,6 +186,17 @@ namespace Plugins.ECSEntityBuilder.Extensions
 
             result = default;
             return false;
+        }
+
+        public static T GetValueOrDefault<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate) where T : struct, IBufferElementData
+        {
+            foreach (var element in buffer)
+            {
+                if (predicate(element))
+                    return element;
+            }
+
+            return default;
         }
 
         public static bool TryGetValueWithIndex<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate, out T result, out int index) where T : struct, IBufferElementData

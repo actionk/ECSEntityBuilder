@@ -105,6 +105,7 @@ namespace Plugins.ECSEntityBuilder.Extensions
         }
 
         public delegate void UpdateDelegate<T>(ref T data);
+        public delegate T CreateDelegate<T>();
 
         public static void UpdateAll<T>(this DynamicBuffer<T> buffer, UpdateDelegate<T> action) where T : struct, IBufferElementData
         {
@@ -145,6 +146,22 @@ namespace Plugins.ECSEntityBuilder.Extensions
                 }
             }
 
+            return false;
+        }
+
+        public static bool UpdateFirstOrCreateIf<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate, UpdateDelegate<T> updateAction, CreateDelegate<T> createAction) where T : struct, IBufferElementData
+        {
+            for (int i = 0; i < buffer.Length; i++)
+            {
+                T element = buffer[i];
+                if (predicate(element))
+                {
+                    UpdateAt(buffer, i, updateAction);
+                    return true;
+                }
+            }
+
+            buffer.Add(createAction());
             return false;
         }
 

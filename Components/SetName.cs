@@ -5,6 +5,6 @@ namespace Plugins.ECSEntityBuilder.Components
 {
     public struct SetName : IComponentData
     {
-        public FixedString64 value;
+        public FixedString512 value;
     }
 }

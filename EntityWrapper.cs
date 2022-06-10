@@ -198,10 +198,10 @@ namespace Plugins.ECSEntityBuilder
             return this;
         }
 
-        public EntityWrapper AddBuffer<T>(int repeat) where T : struct, IBufferElementData
+        public EntityWrapper AddBuffer<T>(int entriesCount) where T : struct, IBufferElementData
         {
             var buffer = EntityManagerWrapper.AddBuffer<T>(Entity);
-            for (var i = 0; i < repeat; i++)
+            for (var i = 0; i < entriesCount; i++)
                 buffer.Add(new T());
 
             return this;

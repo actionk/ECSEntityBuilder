@@ -78,6 +78,9 @@ namespace Plugins.ECSEntityBuilder.Extensions
 
             return -1;
         }
+        
+        public static bool None<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate) where T : struct, IBufferElementData
+            => !buffer.HasAny(predicate);
 
         public static bool HasAny<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate) where T : struct, IBufferElementData
         {

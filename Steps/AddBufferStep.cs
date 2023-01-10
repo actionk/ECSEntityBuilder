@@ -4,9 +4,9 @@ using Unity.Entities;
 
 namespace Plugins.ECSEntityBuilder.Steps
 {
-    public class AddBufferStep<T> : IEntityBuilderGenericStep<T> where T : struct, IBufferElementData
+    public class AddBufferStep<T> : IEntityBuilderGenericStep<T> where T : unmanaged, IBufferElementData
     {
-        private readonly LinkedList<T> m_elements = new LinkedList<T>();
+        private readonly LinkedList<T> m_elements = new();
 
         public void Add(T element)
         {

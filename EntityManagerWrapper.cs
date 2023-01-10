@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Plugins.ECSEntityBuilder.Archetypes;
 using Plugins.ECSEntityBuilder.Components;
 using Plugins.ECSEntityBuilder.Extensions;
+using Plugins.ECSEntityBuilder.Systems;
 using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
@@ -181,7 +182,7 @@ namespace Plugins.ECSEntityBuilder
             throw new NotImplementedException();
         }
 
-        public void AddComponentData<T>(Entity entity, T component) where T : struct, IComponentData
+        public void AddComponentData<T>(Entity entity, T component) where T : unmanaged, IComponentData
         {
             switch (Type)
             {
@@ -202,7 +203,7 @@ namespace Plugins.ECSEntityBuilder
             throw new NotImplementedException();
         }
 
-        public void AddComponent<T>(Entity entity) where T : struct, IComponentData
+        public void AddComponent<T>(Entity entity) where T : unmanaged, IComponentData
         {
             switch (Type)
             {
@@ -223,7 +224,7 @@ namespace Plugins.ECSEntityBuilder
             throw new NotImplementedException();
         }
 
-        public void SetComponentData<T>(Entity entity, T component) where T : struct, IComponentData
+        public void SetComponentData<T>(Entity entity, T component) where T : unmanaged, IComponentData
         {
             switch (Type)
             {
@@ -244,14 +245,14 @@ namespace Plugins.ECSEntityBuilder
             throw new NotImplementedException();
         }
 
-        public void AddSharedComponentData<T>(Entity entity, T component) where T : struct, ISharedComponentData
+        public void AddSharedComponentData<T>(Entity entity, T component) where T : unmanaged, ISharedComponentData
         {
             switch (Type)
             {
                 case EntityManagerType.MOCK:
                     return;
                 case EntityManagerType.ENTITY_MANAGER:
-                    EntityManager.AddSharedComponentData(entity, component);
+                    EntityManager.AddSharedComponentManaged(entity, component);
                     return;
                 case EntityManagerType.ENTITY_COMMAND_BUFFER:
                 case EntityManagerType.ENTITY_MANAGER_AND_COMMAND_BUFFER:
@@ -265,7 +266,7 @@ namespace Plugins.ECSEntityBuilder
             throw new NotImplementedException();
         }
 
-        public DynamicBuffer<T> AddBuffer<T>(Entity entity) where T : struct, IBufferElementData
+        public DynamicBuffer<T> AddBuffer<T>(Entity entity) where T : unmanaged, IBufferElementData
         {
             switch (Type)
             {
@@ -283,12 +284,12 @@ namespace Plugins.ECSEntityBuilder
             throw new NotImplementedException();
         }
 
-        public T[] GetBufferAsArray<T>(Entity entity) where T : struct, IBufferElementData
+        public T[] GetBufferAsArray<T>(Entity entity) where T : unmanaged, IBufferElementData
         {
             return GetBuffer<T>(entity).ToArray();
         }
 
-        public DynamicBuffer<T> GetBuffer<T>(Entity entity) where T : struct, IBufferElementData
+        public DynamicBuffer<T> GetBuffer<T>(Entity entity) where T : unmanaged, IBufferElementData
         {
             switch (Type)
             {
@@ -302,7 +303,7 @@ namespace Plugins.ECSEntityBuilder
             throw new NotImplementedException();
         }
 
-        public DynamicBuffer<T> GetOrCreateBuffer<T>(Entity entity) where T : struct, IBufferElementData
+        public DynamicBuffer<T> GetOrCreateBuffer<T>(Entity entity) where T : unmanaged, IBufferElementData
         {
             switch (Type)
             {
@@ -319,7 +320,7 @@ namespace Plugins.ECSEntityBuilder
             throw new NotImplementedException();
         }
 
-        public bool HasComponent<T>(Entity entity) where T : struct
+        public bool HasComponent<T>(Entity entity) where T : unmanaged
         {
             switch (Type)
             {
@@ -333,7 +334,7 @@ namespace Plugins.ECSEntityBuilder
             throw new NotImplementedException();
         }
         
-        public bool TryGetComponent<T>(Entity entity, out T output) where T: struct, IComponentData
+        public bool TryGetComponent<T>(Entity entity, out T output) where T: unmanaged, IComponentData
         {
             if (HasComponent<T>(entity))
             {
@@ -345,7 +346,7 @@ namespace Plugins.ECSEntityBuilder
             return false;
         }
         
-        public bool TryGetBuffer<T>(Entity entity, out DynamicBuffer<T> output) where T: struct, IBufferElementData
+        public bool TryGetBuffer<T>(Entity entity, out DynamicBuffer<T> output) where T: unmanaged, IBufferElementData
         {
             if (HasComponent<T>(entity))
             {
@@ -411,7 +412,7 @@ namespace Plugins.ECSEntityBuilder
             throw new NotImplementedException();
         }
 
-        public T GetComponentData<T>(Entity entity) where T : struct, IComponentData
+        public T GetComponentData<T>(Entity entity) where T : unmanaged, IComponentData
         {
             switch (Type)
             {
@@ -454,7 +455,7 @@ namespace Plugins.ECSEntityBuilder
             throw new NotImplementedException("Adding component object only possible using EntityManager, not buffer");
         }
 
-        public void AppendToBuffer<T>(Entity entity, T bufferElementData) where T : struct, IBufferElementData
+        public void AppendToBuffer<T>(Entity entity, T bufferElementData) where T : unmanaged, IBufferElementData
         {
             switch (Type)
             {
@@ -478,7 +479,7 @@ namespace Plugins.ECSEntityBuilder
             throw new NotImplementedException("Adding component object only possible using EntityManager, not buffer");
         }
 
-        public bool RemoveComponent<T>(Entity entity) where T : struct, IComponentData
+        public bool RemoveComponent<T>(Entity entity) where T : unmanaged, IComponentData
         {
             switch (Type)
             {
@@ -553,7 +554,7 @@ namespace Plugins.ECSEntityBuilder
             return EntityWrapper.Wrap(entity, this);
         }
 
-        public DynamicBuffer<T> ReplaceElementsInBuffer<T>(Entity entity, params T[] elements) where T : struct, IBufferElementData
+        public DynamicBuffer<T> ReplaceElementsInBuffer<T>(Entity entity, params T[] elements) where T : unmanaged, IBufferElementData
         {
             var buffer = AddBuffer<T>(entity);
             buffer.Clear();
@@ -561,7 +562,7 @@ namespace Plugins.ECSEntityBuilder
             return buffer;
         }
 
-        public DynamicBuffer<T> ReplaceElementsInBuffer<T>(Entity entity, IEnumerable<T> elements) where T : struct, IBufferElementData
+        public DynamicBuffer<T> ReplaceElementsInBuffer<T>(Entity entity, IEnumerable<T> elements) where T : unmanaged, IBufferElementData
         {
             var buffer = AddBuffer<T>(entity);
             buffer.Clear();
@@ -569,7 +570,7 @@ namespace Plugins.ECSEntityBuilder
             return buffer;
         }
 
-        public void ToggleComponent<T>(Entity entity, bool value) where T : struct, IComponentData
+        public void ToggleComponent<T>(Entity entity, bool value) where T : unmanaged, IComponentData
         {
             if (value)
                 AddComponent<T>(entity);
@@ -577,7 +578,7 @@ namespace Plugins.ECSEntityBuilder
                 RemoveComponent<T>(entity);
         }
 
-        public bool RemoveBuffer<T>(Entity entity) where T : struct, IBufferElementData
+        public bool RemoveBuffer<T>(Entity entity) where T : unmanaged, IBufferElementData
         {
             switch (Type)
             {

@@ -4,9 +4,9 @@ using Unity.Entities;
 namespace Plugins.ECSEntityBuilder.Systems
 {
     [UpdateInGroup(typeof(InitializationSystemGroup))]
-    public class SetNameSystem : ComponentSystem
+    public partial class SetNameSystem : ComponentSystem
     {
-        protected override void OnUpdate()
+        protected override void OnUpdateImpl()
         {
             Entities
                 .WithNone<HasName>()
@@ -16,7 +16,8 @@ namespace Plugins.ECSEntityBuilder.Systems
                     EntityManager.SetName(entity, setName.value.ToString());
 #endif
                     PostUpdateCommands.AddComponent<HasName>(entity);
-                });
+                })
+                .WithoutBurst().Run();
         }
     }
 }

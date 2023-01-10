@@ -1,5 +1,6 @@
 using System;
 using Plugins.ECSEntityBuilder.Archetypes;
+using Plugins.ECSEntityBuilder.Systems;
 using Plugins.ECSEntityBuilder.Variables;
 using Unity.Entities;
 using UnityEngine;
@@ -157,48 +158,48 @@ namespace Plugins.ECSEntityBuilder
             return this;
         }
 
-        public EntityWrapper AddComponentData<T>(T component) where T : struct, IComponentData
+        public EntityWrapper AddComponentData<T>(T component) where T : unmanaged, IComponentData
         {
             EntityManagerWrapper.AddComponentData(Entity, component);
             return this;
         }
 
-        public EntityWrapper AddComponent<T>() where T : struct, IComponentData
+        public EntityWrapper AddComponent<T>() where T : unmanaged, IComponentData
         {
             EntityManagerWrapper.AddComponent<T>(Entity);
             return this;
         }
 
-        public EntityWrapper SetComponentData<T>(T component) where T : struct, IComponentData
+        public EntityWrapper SetComponentData<T>(T component) where T : unmanaged, IComponentData
         {
             EntityManagerWrapper.SetComponentData(Entity, component);
             return this;
         }
 
-        public EntityWrapper AddSharedComponentData<T>(T component) where T : struct, ISharedComponentData
+        public EntityWrapper AddSharedComponentData<T>(T component) where T : unmanaged, ISharedComponentData
         {
             EntityManagerWrapper.AddSharedComponentData(Entity, component);
             return this;
         }
 
-        public DynamicBuffer<T> AddBufferAndReturn<T>() where T : struct, IBufferElementData
+        public DynamicBuffer<T> AddBufferAndReturn<T>() where T : unmanaged, IBufferElementData
         {
             return EntityManagerWrapper.AddBuffer<T>(Entity);
         }
 
-        public EntityWrapper AppendToBuffer<T>(T elementData) where T : struct, IBufferElementData
+        public EntityWrapper AppendToBuffer<T>(T elementData) where T : unmanaged, IBufferElementData
         {
             EntityManagerWrapper.AppendToBuffer<T>(Entity, elementData);
             return this;
         }
 
-        public EntityWrapper AddBuffer<T>() where T : struct, IBufferElementData
+        public EntityWrapper AddBuffer<T>() where T : unmanaged,IBufferElementData
         {
             EntityManagerWrapper.AddBuffer<T>(Entity);
             return this;
         }
 
-        public EntityWrapper AddBuffer<T>(int entriesCount) where T : struct, IBufferElementData
+        public EntityWrapper AddBuffer<T>(int entriesCount) where T : unmanaged, IBufferElementData
         {
             var buffer = EntityManagerWrapper.AddBuffer<T>(Entity);
             for (var i = 0; i < entriesCount; i++)
@@ -207,7 +208,7 @@ namespace Plugins.ECSEntityBuilder
             return this;
         }
 
-        public EntityWrapper AddElementsToBuffer<T>(params T[] elements) where T : struct, IBufferElementData
+        public EntityWrapper AddElementsToBuffer<T>(params T[] elements) where T : unmanaged, IBufferElementData
         {
             var buffer = EntityManagerWrapper.AddBuffer<T>(Entity);
             foreach (var element in elements)
@@ -215,7 +216,7 @@ namespace Plugins.ECSEntityBuilder
             return this;
         }
 
-        public EntityWrapper ReplaceElementsInBuffer<T>(params T[] elements) where T : struct, IBufferElementData
+        public EntityWrapper ReplaceElementsInBuffer<T>(params T[] elements) where T : unmanaged, IBufferElementData
         {
             if (Entity.Index < 0)
                 return AddElementsToBuffer(elements);
@@ -227,12 +228,12 @@ namespace Plugins.ECSEntityBuilder
             return this;
         }
 
-        public DynamicBuffer<T> GetBuffer<T>() where T : struct, IBufferElementData
+        public DynamicBuffer<T> GetBuffer<T>() where T : unmanaged, IBufferElementData
         {
             return EntityManagerWrapper.GetBuffer<T>(Entity);
         }
 
-        public DynamicBuffer<T> GetOrCreateBuffer<T>() where T : struct, IBufferElementData
+        public DynamicBuffer<T> GetOrCreateBuffer<T>() where T : unmanaged, IBufferElementData
         {
             if (EntityManagerWrapper.HasComponent<T>(Entity))
                 return EntityManagerWrapper.GetBuffer<T>(Entity);
@@ -247,22 +248,22 @@ namespace Plugins.ECSEntityBuilder
             return this;
         }
 
-        public T GetComponentData<T>() where T : struct, IComponentData
+        public T GetComponentData<T>() where T : unmanaged, IComponentData
         {
             return EntityManagerWrapper.GetComponentData<T>(Entity);
         }
 
-        public T GetComponentDataOrDefault<T>() where T : struct, IComponentData
+        public T GetComponentDataOrDefault<T>() where T : unmanaged, IComponentData
         {
             return EntityManagerWrapper.HasComponent<T>(Entity) ? EntityManagerWrapper.GetComponentData<T>(Entity) : default(T);
         }
 
-        public bool HasComponent<T>() where T : struct
+        public bool HasComponent<T>() where T : unmanaged
         {
             return EntityManagerWrapper.HasComponent<T>(Entity);
         }
 
-        public bool RemoveComponent<T>() where T : struct, IComponentData
+        public bool RemoveComponent<T>() where T : unmanaged, IComponentData
         {
             return EntityManagerWrapper.RemoveComponent<T>(Entity);
         }
@@ -272,12 +273,12 @@ namespace Plugins.ECSEntityBuilder
             EntityManagerWrapper.AddComponentObject(Entity, componentObject);
         }
 
-        public DynamicBuffer<T> AddOrCreateBuffer<T>() where T : struct, IBufferElementData
+        public DynamicBuffer<T> AddOrCreateBuffer<T>() where T : unmanaged, IBufferElementData
         {
             return EntityManagerWrapper.HasComponent<T>(Entity) ? EntityManagerWrapper.GetBuffer<T>(Entity) : EntityManagerWrapper.AddBuffer<T>(Entity);
         }
 
-        public bool TryGetComponent<T>(out T output) where T: struct, IComponentData
+        public bool TryGetComponent<T>(out T output) where T: unmanaged, IComponentData
         {
             if (EntityManagerWrapper.HasComponent<T>(Entity))
             {
@@ -289,7 +290,7 @@ namespace Plugins.ECSEntityBuilder
             return false;
         }
 
-        public bool TryGetBuffer<T>(out DynamicBuffer<T> output) where T: struct, IBufferElementData
+        public bool TryGetBuffer<T>(out DynamicBuffer<T> output) where T: unmanaged, IBufferElementData
         {
             if (EntityManagerWrapper.HasComponent<T>(Entity))
             {

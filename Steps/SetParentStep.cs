@@ -16,7 +16,6 @@ namespace Plugins.ECSEntityBuilder.Steps
         public void Process(EntityManagerWrapper wrapper, EntityVariableMap variables, Entity entity)
         {
             wrapper.AddComponentData(entity, new Parent {Value = m_parentEntity});
-            wrapper.AddComponentData(entity, new LocalToParent());
         }
     }
 }

@@ -6,7 +6,7 @@ namespace Plugins.ECSEntityBuilder.Extensions
 {
     public static class DynamicBufferExtensions
     {
-        public static T[] ToArray<T>(this DynamicBuffer<T> buffer) where T : struct, IBufferElementData
+        public static T[] ToArray<T>(this DynamicBuffer<T> buffer) where T : unmanaged, IBufferElementData
         {
             var array = new T[buffer.Length];
             for (var i = 0; i < array.Length; i++)
@@ -14,7 +14,7 @@ namespace Plugins.ECSEntityBuilder.Extensions
             return array;
         }
 
-        public static HashSet<T> ToHashSet<T>(this DynamicBuffer<T> buffer) where T : struct, IBufferElementData
+        public static HashSet<T> ToHashSet<T>(this DynamicBuffer<T> buffer) where T : unmanaged, IBufferElementData
         {
             var set = new HashSet<T>();
             for (var i = 0; i < buffer.Length; i++)
@@ -22,7 +22,7 @@ namespace Plugins.ECSEntityBuilder.Extensions
             return set;
         }
 
-        public static HashSet<TOutput> ToHashSet<TInput, TOutput>(this DynamicBuffer<TInput> buffer, Func<TInput, TOutput> mappingFunction) where TInput : struct, IBufferElementData
+        public static HashSet<TOutput> ToHashSet<TInput, TOutput>(this DynamicBuffer<TInput> buffer, Func<TInput, TOutput> mappingFunction) where TInput : unmanaged, IBufferElementData
         {
             var set = new HashSet<TOutput>();
             for (var i = 0; i < buffer.Length; i++)
@@ -31,7 +31,7 @@ namespace Plugins.ECSEntityBuilder.Extensions
         }
 
         public static Dictionary<TKey, TValue> ToDictionary<TKey, TValue>(this DynamicBuffer<TValue> buffer, Func<TValue, TKey> mapping)
-            where TValue : struct, IBufferElementData
+            where TValue : unmanaged, IBufferElementData
         {
             var dictionary = new Dictionary<TKey, TValue>();
             foreach (var entry in buffer)
@@ -41,7 +41,7 @@ namespace Plugins.ECSEntityBuilder.Extensions
         }
 
         public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this DynamicBuffer<T> buffer, Func<T, KeyValuePair<TKey, TValue>> mapping)
-            where T : struct, IBufferElementData
+            where T : unmanaged, IBufferElementData
         {
             var dictionary = new Dictionary<TKey, TValue>();
             foreach (var entry in buffer)
@@ -53,7 +53,7 @@ namespace Plugins.ECSEntityBuilder.Extensions
             return dictionary;
         }
 
-        public static T2[] ToArray<T, T2>(this DynamicBuffer<T> buffer, Func<T, T2> mappingFunction) where T : struct, IBufferElementData
+        public static T2[] ToArray<T, T2>(this DynamicBuffer<T> buffer, Func<T, T2> mappingFunction) where T : unmanaged, IBufferElementData
         {
             var array = new T2[buffer.Length];
             for (var i = 0; i < array.Length; i++)
@@ -62,13 +62,13 @@ namespace Plugins.ECSEntityBuilder.Extensions
             return array;
         }
 
-        public static void ForEach<T>(this DynamicBuffer<T> buffer, Action<T> mappingFunction) where T : struct, IBufferElementData
+        public static void ForEach<T>(this DynamicBuffer<T> buffer, Action<T> mappingFunction) where T : unmanaged, IBufferElementData
         {
             for (var i = 0; i < buffer.Length; i++)
                 mappingFunction.Invoke(buffer[i]);
         }
 
-        public static int IndexOf<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate) where T : struct, IBufferElementData
+        public static int IndexOf<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate) where T : unmanaged, IBufferElementData
         {
             for (var i = 0; i < buffer.Length; i++)
             {
@@ -79,10 +79,10 @@ namespace Plugins.ECSEntityBuilder.Extensions
             return -1;
         }
         
-        public static bool None<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate) where T : struct, IBufferElementData
+        public static bool None<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate) where T : unmanaged, IBufferElementData
             => !buffer.HasAny(predicate);
 
-        public static bool HasAny<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate) where T : struct, IBufferElementData
+        public static bool HasAny<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate) where T : unmanaged, IBufferElementData
         {
             for (var i = 0; i < buffer.Length; i++)
             {
@@ -93,12 +93,12 @@ namespace Plugins.ECSEntityBuilder.Extensions
             return false;
         }
 
-        public static bool Contains<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate) where T : struct, IBufferElementData
+        public static bool Contains<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate) where T : unmanaged, IBufferElementData
         {
             return buffer.IndexOf(predicate) != -1;
         }
 
-        public static void AddOrReplace<T>(this DynamicBuffer<T> buffer, T element, Predicate<T> predicate) where T : struct, IBufferElementData
+        public static void AddOrReplace<T>(this DynamicBuffer<T> buffer, T element, Predicate<T> predicate) where T : unmanaged, IBufferElementData
         {
             var indexOfExistingElement = buffer.IndexOf(predicate);
             if (indexOfExistingElement >= 0)
@@ -110,7 +110,7 @@ namespace Plugins.ECSEntityBuilder.Extensions
         public delegate void UpdateDelegate<T>(ref T data);
         public delegate T CreateDelegate<T>();
 
-        public static void UpdateAll<T>(this DynamicBuffer<T> buffer, UpdateDelegate<T> action) where T : struct, IBufferElementData
+        public static void UpdateAll<T>(this DynamicBuffer<T> buffer, UpdateDelegate<T> action) where T : unmanaged, IBufferElementData
         {
             for (int index = 0; index < buffer.Length; index++)
             {
@@ -118,14 +118,14 @@ namespace Plugins.ECSEntityBuilder.Extensions
             }
         }
 
-        public static void UpdateAt<T>(this DynamicBuffer<T> buffer, int index, UpdateDelegate<T> action) where T : struct, IBufferElementData
+        public static void UpdateAt<T>(this DynamicBuffer<T> buffer, int index, UpdateDelegate<T> action) where T : unmanaged, IBufferElementData
         {
             var element = buffer[index];
             action(ref element);
             buffer[index] = element;
         }
 
-        public static void UpdateIf<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate, UpdateDelegate<T> action) where T : struct, IBufferElementData
+        public static void UpdateIf<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate, UpdateDelegate<T> action) where T : unmanaged, IBufferElementData
         {
             for (int i = 0; i < buffer.Length; i++)
             {
@@ -137,7 +137,7 @@ namespace Plugins.ECSEntityBuilder.Extensions
             }
         }
 
-        public static bool UpdateFirstIf<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate, UpdateDelegate<T> action) where T : struct, IBufferElementData
+        public static bool UpdateFirstIf<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate, UpdateDelegate<T> action) where T : unmanaged, IBufferElementData
         {
             for (int i = 0; i < buffer.Length; i++)
             {
@@ -152,7 +152,7 @@ namespace Plugins.ECSEntityBuilder.Extensions
             return false;
         }
 
-        public static bool UpdateFirstOrCreateIf<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate, UpdateDelegate<T> updateAction, CreateDelegate<T> createAction) where T : struct, IBufferElementData
+        public static bool UpdateFirstOrCreateIf<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate, UpdateDelegate<T> updateAction, CreateDelegate<T> createAction) where T : unmanaged, IBufferElementData
         {
             for (int i = 0; i < buffer.Length; i++)
             {
@@ -168,7 +168,7 @@ namespace Plugins.ECSEntityBuilder.Extensions
             return false;
         }
 
-        public static int FindFirstIndex<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate) where T : struct, IBufferElementData
+        public static int FindFirstIndex<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate) where T : unmanaged, IBufferElementData
         {
             for (int i = 0; i < buffer.Length; i++)
             {
@@ -181,7 +181,7 @@ namespace Plugins.ECSEntityBuilder.Extensions
             return -1;
         }
         
-        public static void RemoveAll<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate) where T : struct, IBufferElementData
+        public static void RemoveAll<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate) where T : unmanaged, IBufferElementData
         {
             for (int i = 0; i < buffer.Length; i++)
             {
@@ -193,7 +193,7 @@ namespace Plugins.ECSEntityBuilder.Extensions
             }
         }
 
-        public static bool TryGetValue<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate, out T result) where T : struct, IBufferElementData
+        public static bool TryGetValue<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate, out T result) where T : unmanaged, IBufferElementData
         {
             foreach (var element in buffer)
             {
@@ -208,7 +208,7 @@ namespace Plugins.ECSEntityBuilder.Extensions
             return false;
         }
 
-        public static T GetValueOrDefault<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate) where T : struct, IBufferElementData
+        public static T GetValueOrDefault<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate) where T : unmanaged, IBufferElementData
         {
             foreach (var element in buffer)
             {
@@ -219,7 +219,7 @@ namespace Plugins.ECSEntityBuilder.Extensions
             return default;
         }
 
-        public static bool TryGetValueWithIndex<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate, out T result, out int index) where T : struct, IBufferElementData
+        public static bool TryGetValueWithIndex<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate, out T result, out int index) where T : unmanaged, IBufferElementData
         {
             for(var i = 0; i < buffer.Length; i++)
             {
@@ -237,13 +237,13 @@ namespace Plugins.ECSEntityBuilder.Extensions
             return false;
         }
 
-        public static void AddRange<T>(this DynamicBuffer<T> buffer, IEnumerable<T> values) where T : struct, IBufferElementData
+        public static void AddRange<T>(this DynamicBuffer<T> buffer, IEnumerable<T> values) where T : unmanaged, IBufferElementData
         {
             foreach (var value in values)
                 buffer.Add(value);
         }
 
-        public static bool RemoveFirst<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate) where T : struct, IBufferElementData
+        public static bool RemoveFirst<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate) where T : unmanaged, IBufferElementData
         {
             var indexOfExistingElement = buffer.IndexOf(predicate);
             if (indexOfExistingElement >= 0)
@@ -252,7 +252,7 @@ namespace Plugins.ECSEntityBuilder.Extensions
             return indexOfExistingElement >= 0;
         }
 
-        public static bool ReplaceFirst<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate, T replaceWith) where T : struct, IBufferElementData
+        public static bool ReplaceFirst<T>(this DynamicBuffer<T> buffer, Predicate<T> predicate, T replaceWith) where T : unmanaged, IBufferElementData
         {
             var indexOfExistingElement = buffer.IndexOf(predicate);
             if (indexOfExistingElement >= 0)

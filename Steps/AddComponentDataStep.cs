@@ -3,7 +3,7 @@ using Unity.Entities;
 
 namespace Plugins.ECSEntityBuilder.Steps
 {
-    public class AddComponentDataStep<T> : IEntityBuilderGenericStep<T> where T : struct, IComponentData
+    public class AddComponentDataStep<T> : IEntityBuilderGenericStep<T> where T : unmanaged, IComponentData
     {
         private T m_componentData;
 

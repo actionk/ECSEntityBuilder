@@ -3,7 +3,7 @@ using Unity.Entities;
 
 namespace Plugins.ECSEntityBuilder.Components
 {
-    public struct SetName : IComponentData
+    public struct SetName : IComponentData 
     {
         public FixedString512Bytes value;
     }

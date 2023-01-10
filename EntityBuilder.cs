@@ -77,13 +77,13 @@ namespace Plugins.ECSEntityBuilder
             return this;
         }
 
-        public EntityBuilder AddComponent<T>() where T : struct, IComponentData
+        public EntityBuilder AddComponent<T>() where T : unmanaged, IComponentData
         {
             GetOrCreateGenericStep<AddComponentStep<T>, T>();
             return this;
         }
 
-        public EntityBuilder AddComponentData<T>(T component) where T : struct, IComponentData
+        public EntityBuilder AddComponentData<T>(T component) where T : unmanaged, IComponentData
         {
             GetOrCreateGenericStep<AddComponentDataStep<T>, T>().SetValue(component);
             return this;
@@ -95,7 +95,7 @@ namespace Plugins.ECSEntityBuilder
             return this;
         }
 
-        public EntityBuilder SetComponentData<T>(T component) where T : struct, IComponentData
+        public EntityBuilder SetComponentData<T>(T component) where T : unmanaged, IComponentData
         {
             GetOrCreateStep<SetComponentDataStep<T>>().SetValue(component);
             return this;
@@ -107,35 +107,7 @@ namespace Plugins.ECSEntityBuilder
             return this;
         }
 
-        public EntityBuilder SetTranslation(float3 translation)
-        {
-            GetOrCreateStep<SetTranslationStep>().SetValue(translation);
-            return this;
-        }
-
-        public EntityBuilder SetRotation(quaternion quaternion)
-        {
-            GetOrCreateStep<SetRotationStep>().SetValue(quaternion);
-            return this;
-        }
-
-        public EntityBuilder SetRotation(float3 euler)
-        {
-            var quaternion = Unity.Mathematics.quaternion.Euler(euler);
-            GetOrCreateStep<SetRotationStep>().SetValue(quaternion);
-            return this;
-        }
-
-        public EntityBuilder SetRotationAngles(float3 eulerAngles)
-        {
-            var quaternion = Unity.Mathematics.quaternion.Euler(
-                math.radians(eulerAngles.x), math.radians(eulerAngles.y), math.radians(eulerAngles.z)
-            );
-            GetOrCreateStep<SetRotationStep>().SetValue(quaternion);
-            return this;
-        }
-
-        public EntityBuilder AddSharedComponentData<T>(T component) where T : struct, ISharedComponentData
+        public EntityBuilder AddSharedComponentData<T>(T component) where T : unmanaged, ISharedComponentData
         {
             GetOrCreateGenericStep<AddSharedComponentDataStep<T>, T>().SetValue(component);
             return this;
@@ -163,7 +135,7 @@ namespace Plugins.ECSEntityBuilder
             return createdSingletonStep;
         }
 
-        public EntityBuilder AddBuffer<T>(params T[] elements) where T : struct, IBufferElementData
+        public EntityBuilder AddBuffer<T>(params T[] elements) where T : unmanaged, IBufferElementData
         {
             var step = GetOrCreateGenericStep<AddBufferStep<T>, T>();
             foreach (var element in elements)
@@ -171,19 +143,19 @@ namespace Plugins.ECSEntityBuilder
             return this;
         }
 
-        public EntityBuilder AddBuffer<T>() where T : struct, IBufferElementData
+        public EntityBuilder AddBuffer<T>() where T : unmanaged, IBufferElementData
         {
             GetOrCreateGenericStep<AddBufferStep<T>, T>();
             return this;
         }
 
-        public EntityBuilder AddElementToBuffer<T>(T element) where T : struct, IBufferElementData
+        public EntityBuilder AddElementToBuffer<T>(T element) where T : unmanaged, IBufferElementData
         {
             GetOrCreateGenericStep<AddBufferStep<T>, T>().Add(element);
             return this;
         }
 
-        public EntityBuilder AddElementsToBuffer<T>(params T[] elements) where T : struct, IBufferElementData
+        public EntityBuilder AddElementsToBuffer<T>(params T[] elements) where T : unmanaged, IBufferElementData
         {
             foreach (var element in elements)
                 GetOrCreateGenericStep<AddBufferStep<T>, T>().Add(element);
@@ -191,7 +163,7 @@ namespace Plugins.ECSEntityBuilder
             return this;
         }
 
-        public EntityBuilder AddElementsToBuffer<T>(IEnumerable<T> elements) where T : struct, IBufferElementData
+        public EntityBuilder AddElementsToBuffer<T>(IEnumerable<T> elements) where T : unmanaged, IBufferElementData
         {
             foreach (var element in elements)
                 GetOrCreateGenericStep<AddBufferStep<T>, T>().Add(element);
@@ -202,12 +174,6 @@ namespace Plugins.ECSEntityBuilder
         public EntityBuilder SetParent(Entity entity)
         {
             GetOrCreateStep<SetParentStep>().SetValue(entity);
-            return this;
-        }
-
-        public EntityBuilder SetScale(float scale)
-        {
-            GetOrCreateStep<SetScaleStep>().SetValue(scale);
             return this;
         }
 

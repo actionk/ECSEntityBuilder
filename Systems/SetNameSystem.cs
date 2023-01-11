@@ -1,5 +1,6 @@
 using Plugins.ECSEntityBuilder.Components;
 using Unity.Entities;
+using Unity.Mathematics;
 
 namespace Plugins.ECSEntityBuilder.Systems
 {
@@ -13,7 +14,8 @@ namespace Plugins.ECSEntityBuilder.Systems
                 .ForEach((Entity entity, ref SetName setName) =>
                 {
 #if UNITY_EDITOR
-                    EntityManager.SetName(entity, setName.value.ToString());
+                    var nameValue = setName.value.Value;
+                    EntityManager.SetName(entity, nameValue.Substring(0, math.min(60, nameValue.Length)));
 #endif
                     PostUpdateCommands.AddComponent<HasName>(entity);
                 })
